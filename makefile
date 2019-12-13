@@ -51,14 +51,12 @@ help:
 	@echo '    make [TARGET TARGET ...]'
 	@echo ''
 	@echo 'TARGET can be:'
-	@echo '    all         - all you need to know do get your app deployed.'
 	@echo '    image       - generates the Docker image using a proper build command.'
 	@echo '    release     - build and pushes the Docker image to specified registry.'
-	@echo '    docker-run  - simply runs the specified generated Docker image.'
-	@echo '    image-start - starts the specified image in background, useful for testing images'
-	@echo '                  containing daemons of servers or something alike.'
+	@echo '    docker-run  - runs the generated Docker image (with RUN_FLAGS, if specified).'
+	@echo '    image-start - starts the specified image in background (with RUN_FLAGS, if specified).'
 	@echo '    image-stop  - stops the specified image previously started.'
-	@echo '    build-k8s   - interpolates the variables of project in yaml files at k8s folder.'
+	@echo '    build-k8s   - interpolates the variables of project in yaml files at their folder.'
 	@echo '    deploy      - apply yaml files to deploy the system at the Kubernetes cluster.'
 	@echo '    clean       - gets rid of generated and volatile files and resources.'
 	@echo '    help        - this message.'
@@ -71,12 +69,10 @@ else
 	@echo 'Using image $(DOCKER_IMAGE)'
 endif
 
-
 release: image
 ifeq ($(BUILD_IMAGE), true)
 	docker push "$(DOCKER_IMAGE)"
 endif
-
 
 docker-run: image
 ifdef RUN_FLAGS
@@ -85,7 +81,6 @@ else
 	docker run --rm --name $(PACKAGE)-$(APPLICATION) $(DOCKER_IMAGE)
 endif
 
-
 image-start: image
 ifdef RUN_FLAGS
 	docker run -d --name $(PACKAGE)-$(APPLICATION) $(RUN_FLAGS) $(DOCKER_IMAGE)
@@ -93,11 +88,8 @@ else
 	docker run -d --name $(PACKAGE)-$(APPLICATION) $(DOCKER_IMAGE)
 endif
 
-
-
 image-stop: image
 	docker stop -t 1 $(PACKAGE)-$(APPLICATION)
-	docker rm -f $(PACKAGE)-$(APPLICATION)
 
 
 # Build the Kubernetes build directory if it does not exist
@@ -122,4 +114,3 @@ deploy: build-k8s
 clean:
 	@docker rmi -f $(DOCKER_IMAGE) 2>/dev/null
 	@rm -rf $(K8S_BUILD_DIR)
-	@rm -rf $(SRC_DIR)/bin
