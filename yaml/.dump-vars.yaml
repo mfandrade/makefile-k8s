@@ -1,0 +1,9 @@
+package: ${PACKAGE}
+application: ${APPLICATION}
+environment: ${ENVIRONMENT}
+docker_image: ${DOCKER_IMAGE}
+version: ${VERSION}
+app_backend_port: ${APP_BACKEND_PORT}
+app_endpoint_url: ${APP_ENDPOINT_URL}
+app_endpoint_path: ${APP_ENDPOINT_PATH}
+
