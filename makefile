@@ -16,9 +16,9 @@ ENV_FILE    := $(SRC_DIR)/env
 
 BUILD_IMAGE ?= true
 IMAGE_HUB   ?= registry.trt8.jus.br
-IMAGE_NAME  ?= $(shell git remote -v | sed -ne '1 s/^origin.*gitlab\.trt8\.jus\.br[:/]\(.*\)\.git.*$/\1/p')
+IMAGE_NAME  ?= $(shell git remote -v | sed -ne '1 s:^origin.*gitlab\.trt8\.jus\.br[:/]\(.*\)\.git.*$$:\1:p')
 ifndef IMAGE_NAME
-	$(error "IMAGE_NAME is undefined. Please define it on app.ini or clone a repo from gitlab.trt8.jus.br")
+$(error "IMAGE_NAME is undefined. Please define it on app.ini or clone a repo from gitlab.trt8.jus.br")
 endif
 
 DOCKER_IMAGE := $(IMAGE_HUB)/$(IMAGE_NAME):$(VERSION)
