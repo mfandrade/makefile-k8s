@@ -37,14 +37,12 @@ endif
 
 APPID := $(shell bash -c 'printf "%05d" $$RANDOM')-$(APPLICATION)
 
-MAKE_ENV := PACKAGE ENVIRONMENT VERSION DOCKER_IMAGE APPID APPLICATION
-MAKE_ENV += APP_BACKEND_PORT APP_ENDPOINT_URL APP_ENDPOINT_PATH
+AVAILABLE_VARS := PACKAGE ENVIRONMENT VERSION DOCKER_IMAGE APPID APPLICATION
+AVAILABLE_VARS += APP_BACKEND_PORT APP_ENDPOINT_URL APP_ENDPOINT_PATH
 
-SHELL_EXPORT := $(foreach v,$(MAKE_ENV),$(v)='$($(v))' )
-#SHELL_EXPORT += $(foreach v,$(filter APPENV_%,$(.VARIABLES)),$(info $(subst APPENV_,,$(v))='$($(v))') )
+SHELL_EXPORT := $(foreach v,$(AVAILABLE_VARS),$(v)='$($(v))' )
 
-#.DEFAULT_GOAL := all
-
+# ---------------------------------------------------------------------------------------------------------------------
 .PHONY: help compile image release docker-run image-start image-stop build-k8s deploy clean
 
 help:
@@ -108,7 +106,7 @@ $(K8S_BUILD_DIR):
 	@mkdir -p $(K8S_BUILD_DIR)
 
 build-k8s: $(K8S_BUILD_DIR)
-	# yaml files support the following vars: $(MAKE_ENV)
+	# yaml files support the following vars: $(AVAILABLE_VARS)
 	@for file in $(K8S_FILES); do \
 		mkdir -p `dirname "$(K8S_BUILD_DIR)/$$file"` ; \
 		$(SHELL_EXPORT) envsubst <$(K8S_DIR)/$$file >$(K8S_BUILD_DIR)/$$file ;\
