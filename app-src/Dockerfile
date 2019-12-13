@@ -1,6 +1,8 @@
 FROM golang:1.7 AS compiler
-RUN go build hello.go -o hello
+WORKDIR /tmp
+COPY hello.go .
+RUN go build hello.go
 
 FROM scratch
-COPY --from=compiler hello /
+COPY --from=compiler /tmp/hello /
 ENTRYPOINT ["/hello"]
