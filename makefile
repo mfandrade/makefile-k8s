@@ -14,17 +14,14 @@ K8S_FILES     := $(shell find $(K8S_DIR) -name '*.yaml' | sed 's:$(K8S_DIR)/::g'
 SRC_DIR     ?= ./app-src
 ENV_FILE    := $(SRC_DIR)/env
 
-IMAGE_HUB   ?= registry.trt8.jus.br
 BUILD_IMAGE ?= true
-
-ifndef IMAGE_REPO
-	$(error IMAGE_REPO is undefined)
-endif
+IMAGE_HUB   ?= registry.trt8.jus.br
+IMAGE_NAME  ?= $(shell git remote -v | sed -ne '1 s/^origin.*gitlab\.trt8\.jus\.br[:/]\(.*\)\.git.*$/\1/p')
 ifndef IMAGE_NAME
-	$(error IMAGE_NAME is undefined)
+	$(error "IMAGE_NAME is undefined. Please define it on app.ini or clone a repo from gitlab.trt8.jus.br")
 endif
 
-DOCKER_IMAGE := $(IMAGE_HUB)/$(IMAGE_REPO)/$(IMAGE_NAME):$(VERSION)
+DOCKER_IMAGE := $(IMAGE_HUB)/$(IMAGE_NAME):$(VERSION)
 
 ifdef BUILD_ARGS
 DOCKER_BUILD_CMD := docker build --build-arg $(BUILD_ARGS) -t $(DOCKER_IMAGE) $(SRC_DIR)
