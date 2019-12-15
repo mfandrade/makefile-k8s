@@ -22,7 +22,7 @@ spec:
         prometheus.io/port: "1234"
     spec:
       containers:
-      - name: ${APPLICATION}
+      - name: ${APPLICATION}-container
         image: ${DOCKER_IMAGE} 
         imagePullPolicy: Always
         ports:

@@ -71,13 +71,13 @@ endif
 
 docker-run: image
 	@test -f $(ENV_FILE) \
-	&& docker run --rm --name $(APPLICATION) $(RUN_FLAGS) --env-file=$(ENV_FILE) $(DOCKER_IMAGE) \
-	|| docker run --rm --name $(APPLICATION) $(RUN_FLAGS) $(DOCKER_IMAGE)
+	&& docker run --rm --name $(APPLICATION)-container $(RUN_FLAGS) --env-file=$(ENV_FILE) $(DOCKER_IMAGE) \
+	|| docker run --rm --name $(APPLICATION)-container $(RUN_FLAGS) $(DOCKER_IMAGE)
 
 image-start: image
 	@test -f $(ENV_FILE) \
-	&& docker run -d --name $(APPLICATION) $(RUN_FLAGS) --env-file=$(ENV_FILE) $(DOCKER_IMAGE) \
-	|| docker run -d --name $(APPLICATION) $(RUN_FLAGS) $(DOCKER_IMAGE) \
+	&& docker run -d --name $(APPLICATION)-container $(RUN_FLAGS) --env-file=$(ENV_FILE) $(DOCKER_IMAGE) \
+	|| docker run -d --name $(APPLICATION)-container $(RUN_FLAGS) $(DOCKER_IMAGE)
 
 image-stop: image
 	docker stop -t 1 $(APPLICATION)
@@ -93,10 +93,10 @@ build-yaml: $(YAML_BUILD_DIR)
 	@for file in $(YAML_FILES); do \
 		mkdir -p `dirname "$(YAML_BUILD_DIR)/$$file"` ; \
 		$(SHELL_EXPORT) envsubst <$(YAML_DIR)/$$file >$(YAML_BUILD_DIR)/$$file ;\
-	done
-ifeq (,$(wildcard $(ENV_FILE)))
-	@echo "Found $(ENV_FILE) file. ConfigMap $(APPLICATION)-config will be created"
-	kubectl create configmap $(APPLICATION)-config -n $(PACKAGE) --from-env-file=$(ENV_FILE)
+	done 
+	@test -f $(ENV_FILE) \
+	&& @echo "Found $(ENV_FILE) file. ConfigMap $(APPLICATION)-config will be created" \
+	&& kubectl create configmap $(APPLICATION)-config -n $(PACKAGE) --from-env-file=$(ENV_FILE)
 endif
 
 deploy: build-yaml
