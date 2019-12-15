@@ -1,15 +1,15 @@
 include app.ini
 
-PACKAGE     ?= $(shell basename $(CURDIR))
-APPLICATION ?= $(PACKAGE)
+APPLICATION ?= $(shell basename $(CURDIR))
+PACKAGE ?= $(APPLICATION)
 VERSION     := $(shell git describe --tags --dirty --match="v*" 2> /dev/null || cat $(CURDIR)/.version 2> /dev/null)
 ifndef VERSION
 VERSION     := latest
 endif
 
-K8S_DIR       ?= ./yaml
-K8S_BUILD_DIR ?= ./.build_yaml
-K8S_FILES     := $(shell find $(K8S_DIR) -name '*.yaml' | sed 's:$(K8S_DIR)/::g')
+YAML_DIR       ?= ./yaml
+YAML_BUILD_DIR ?= ./.build_yaml
+YAML_FILES     := $(shell find $(YAML_DIR) -name '*.yaml' | sed 's:$(YAML_DIR)/::g')
 
 SRC_DIR     ?= ./app-src
 ENV_FILE    := $(SRC_DIR)/env
@@ -43,7 +43,7 @@ AVAILABLE_VARS += APP_BACKEND_PORT APP_ENDPOINT_URL APP_ENDPOINT_PATH
 SHELL_EXPORT := $(foreach v,$(AVAILABLE_VARS),$(v)='$($(v))' )
 
 # ---------------------------------------------------------------------------------------------------------------------
-.PHONY: help compile image release docker-run image-start image-stop build-k8s deploy clean
+.PHONY: help compile image release docker-run image-start image-stop build-yaml deploy clean
 
 help:
 	@echo ''
@@ -56,7 +56,7 @@ help:
 	@echo '    docker-run  - runs the generated Docker image (with RUN_FLAGS, if specified).'
 	@echo '    image-start - starts the specified image in background (with RUN_FLAGS, if specified).'
 	@echo '    image-stop  - stops the specified image previously started.'
-	@echo '    build-k8s   - interpolates the variables of project in yaml files at their folder.'
+	@echo '    build-yaml   - interpolates the variables of project in yaml files at their folder.'
 	@echo '    deploy      - apply yaml files to deploy the system at the Kubernetes cluster.'
 	@echo '    clean       - gets rid of generated and volatile files and resources.'
 	@echo '    help        - this message.'
@@ -94,23 +94,23 @@ image-stop: image
 
 # Build the Kubernetes build directory if it does not exist
 # The @ symbol prevents make from echoing command results.
-$(K8S_BUILD_DIR):
-	@mkdir -p $(K8S_BUILD_DIR)
+$(YAML_BUILD_DIR):
+	@mkdir -p $(YAML_BUILD_DIR)
 
-build-k8s: $(K8S_BUILD_DIR)
+build-yaml: $(YAML_BUILD_DIR)
 	# yaml files support the following vars: $(AVAILABLE_VARS)
-	@for file in $(K8S_FILES); do \
-		mkdir -p `dirname "$(K8S_BUILD_DIR)/$$file"` ; \
-		$(SHELL_EXPORT) envsubst <$(K8S_DIR)/$$file >$(K8S_BUILD_DIR)/$$file ;\
+	@for file in $(YAML_FILES); do \
+		mkdir -p `dirname "$(YAML_BUILD_DIR)/$$file"` ; \
+		$(SHELL_EXPORT) envsubst <$(YAML_DIR)/$$file >$(YAML_BUILD_DIR)/$$file ;\
 	done
 ifeq (,$(wildcard $(ENV_FILE)))
 	@echo "Found $(ENV_FILE) file. ConfigMap $(APPLICATION)-config will be created"
 	kubectl create configmap $(APPLICATION)-config -n $(PACKAGE) --from-env-file=$(ENV_FILE)
 endif
 
-deploy: build-k8s
-	kubectl apply -f $(K8S_BUILD_DIR)
+deploy: build-yaml
+	kubectl apply -f $(YAML_BUILD_DIR)
 
 clean:
 	@docker rmi -f $(DOCKER_IMAGE) 2>/dev/null
-	@rm -rf $(K8S_BUILD_DIR)
+	@rm -rf $(YAML_BUILD_DIR)
