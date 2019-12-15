@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: ${APPLICATION}-service
+  namespace: ${PACKAGE}
+  labels:
+    app: ${APPLICATION}
+    env: ${ENVIRONMENT}
+spec:
+  selector:
+     app: ${APPLICATION}
+     env: ${ENVIRONMENT}
+  ports:
+    - name: http
+      port: ${APP_BACKEND_PORT}
+

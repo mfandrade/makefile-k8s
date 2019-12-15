@@ -23,21 +23,16 @@ endif
 
 DOCKER_IMAGE := $(IMAGE_HUB)/$(IMAGE_NAME):$(VERSION)
 
-ifdef BUILD_ARGS
-DOCKER_BUILD_CMD := docker build --build-arg $(BUILD_ARGS) -t $(DOCKER_IMAGE) $(SRC_DIR)
+ifndef BUILD_ARGS
+DOCKER_BUILD_ARGS := -t $(DOCKER_IMAGE)
 else
-DOCKER_BUILD_CMD := docker build -t $(DOCKER_IMAGE) $(SRC_DIR)
+DOCKER_BUILD_ARGS := --build-arg $(BUILD_ARGS) -t $(DOCKER_IMAGE)
 endif
 
-ifdef RUN_FLAGS
-DOCKER_RUN_CMD := docker run --rm --name $(PACKAGE)-$(APPLICATION) $(RUN_FLAGS) $(DOCKER_IMAGE)
-else
-DOCKER_RUN_CMD := docker run --rm --name $(PACKAGE)-$(APPLICATION) $(DOCKER_IMAGE)
-endif
 
 APPID := $(shell bash -c 'printf "%05d" $$RANDOM')-$(APPLICATION)
 
-AVAILABLE_VARS := PACKAGE ENVIRONMENT VERSION DOCKER_IMAGE APPID APPLICATION
+AVAILABLE_VARS := PACKAGE ENVIRONMENT DOCKER_IMAGE APPID APPLICATION
 AVAILABLE_VARS += APP_BACKEND_PORT APP_ENDPOINT_URL APP_ENDPOINT_PATH
 
 SHELL_EXPORT := $(foreach v,$(AVAILABLE_VARS),$(v)='$($(v))' )
@@ -64,7 +59,7 @@ help:
 image:
 ifeq ($(BUILD_IMAGE), true)
 	@echo 'Building image $(DOCKER_IMAGE)'
-	$(DOCKER_BUILD_CMD)
+	docker build $(DOCKER_BUILD_ARGS) $(SRC_DIR)
 else
 	@echo 'Using image $(DOCKER_IMAGE)'
 endif
@@ -75,21 +70,17 @@ ifeq ($(BUILD_IMAGE), true)
 endif
 
 docker-run: image
-ifdef RUN_FLAGS
-	docker run --rm --name $(PACKAGE)-$(APPLICATION) $(RUN_FLAGS) $(DOCKER_IMAGE)
-else
-	docker run --rm --name $(PACKAGE)-$(APPLICATION) $(DOCKER_IMAGE)
-endif
+	@test -f $(ENV_FILE) \
+	&& docker run --rm --name $(APPLICATION) $(RUN_FLAGS) --env-file=$(ENV_FILE) $(DOCKER_IMAGE) \
+	|| docker run --rm --name $(APPLICATION) $(RUN_FLAGS) $(DOCKER_IMAGE)
 
 image-start: image
-ifdef RUN_FLAGS
-	docker run -d --name $(PACKAGE)-$(APPLICATION) $(RUN_FLAGS) $(DOCKER_IMAGE)
-else
-	docker run -d --name $(PACKAGE)-$(APPLICATION) $(DOCKER_IMAGE)
-endif
+	@test -f $(ENV_FILE) \
+	&& docker run -d --name $(APPLICATION) $(RUN_FLAGS) --env-file=$(ENV_FILE) $(DOCKER_IMAGE) \
+	|| docker run -d --name $(APPLICATION) $(RUN_FLAGS) $(DOCKER_IMAGE) \
 
 image-stop: image
-	docker stop -t 1 $(PACKAGE)-$(APPLICATION)
+	docker stop -t 1 $(APPLICATION)
 
 
 # Build the Kubernetes build directory if it does not exist
@@ -98,7 +89,7 @@ $(YAML_BUILD_DIR):
 	@mkdir -p $(YAML_BUILD_DIR)
 
 build-yaml: $(YAML_BUILD_DIR)
-	# yaml files support the following vars: $(AVAILABLE_VARS)
+	@echo "YAML files support the following vars: $(AVAILABLE_VARS)"
 	@for file in $(YAML_FILES); do \
 		mkdir -p `dirname "$(YAML_BUILD_DIR)/$$file"` ; \
 		$(SHELL_EXPORT) envsubst <$(YAML_DIR)/$$file >$(YAML_BUILD_DIR)/$$file ;\

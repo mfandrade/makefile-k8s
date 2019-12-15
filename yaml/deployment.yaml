@@ -1,0 +1,30 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: ${APPLICATION}-deploy
+  namespace: ${PACKAGE}
+  labels:
+    app: ${APPLICATION}
+    env: ${ENVIRONMENT}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${APPLICATION}
+      env: ${ENVIRONMENT}
+  template:
+    metadata:
+      labels:
+        app: ${APPLICATION}
+        env: ${ENVIRONMENT}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "1234"
+    spec:
+      containers:
+      - name: ${APPLICATION}
+        image: ${DOCKER_IMAGE} 
+        imagePullPolicy: Always
+        ports:
+        - containerPort: ${APP_BACKEND_PORT}
+
