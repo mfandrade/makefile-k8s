@@ -13,7 +13,7 @@ YAML_BUILD_DIR := ./.build_yaml
 YAML_FILES     := $(shell find $(YAML_DIR) -name '*.yaml' | sed 's:$(YAML_DIR)/::g')
 
 SRC_DIR     ?= ./app-src
-ENV_FILE    := $(SRC_DIR)/env
+ENV_FILE    ?= $(SRC_DIR)/env
 
 BUILD_IMAGE ?= true
 IMAGE_HUB   ?= registry.trt8.jus.br
@@ -98,7 +98,6 @@ build-yaml: $(YAML_BUILD_DIR)
 	@test -f $(ENV_FILE) \
 	&& echo "Found $(ENV_FILE) file. ConfigMap $(APPLICATION)-config will be created" \
 	&& kubectl create configmap $(APPLICATION)-config -n $(PACKAGE) --from-env-file=$(ENV_FILE)
-endif
 
 deploy: build-yaml
 	kubectl apply -f $(YAML_BUILD_DIR)
