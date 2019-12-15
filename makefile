@@ -1,14 +1,15 @@
+# v1.0.0
 include app.ini
 
 APPLICATION ?= $(shell basename $(CURDIR))
-PACKAGE ?= $(APPLICATION)
+PACKAGE     ?= $(APPLICATION)
 VERSION     := $(shell git describe --tags --dirty --match="v*" 2> /dev/null || cat $(CURDIR)/.version 2> /dev/null)
 ifndef VERSION
 VERSION     := latest
 endif
 
 YAML_DIR       ?= ./yaml
-YAML_BUILD_DIR ?= ./.build_yaml
+YAML_BUILD_DIR := ./.build_yaml
 YAML_FILES     := $(shell find $(YAML_DIR) -name '*.yaml' | sed 's:$(YAML_DIR)/::g')
 
 SRC_DIR     ?= ./app-src
@@ -32,13 +33,13 @@ endif
 
 APPID := $(shell bash -c 'printf "%05d" $$RANDOM')-$(APPLICATION)
 
-AVAILABLE_VARS := PACKAGE ENVIRONMENT DOCKER_IMAGE APPID APPLICATION
+AVAILABLE_VARS := PACKAGE APPLICATION ENVIRONMENT DOCKER_IMAGE APPID
 AVAILABLE_VARS += APP_BACKEND_PORT APP_ENDPOINT_URL APP_ENDPOINT_PATH
 
 SHELL_EXPORT := $(foreach v,$(AVAILABLE_VARS),$(v)='$($(v))' )
 
 # ---------------------------------------------------------------------------------------------------------------------
-.PHONY: help compile image release docker-run image-start image-stop build-yaml deploy clean
+.PHONY: help image release docker-run image-start image-stop build-yaml deploy clean
 
 help:
 	@echo ''
@@ -51,7 +52,7 @@ help:
 	@echo '    docker-run  - runs the generated Docker image (with RUN_FLAGS, if specified).'
 	@echo '    image-start - starts the specified image in background (with RUN_FLAGS, if specified).'
 	@echo '    image-stop  - stops the specified image previously started.'
-	@echo '    build-yaml   - interpolates the variables of project in yaml files at their folder.'
+	@echo '    build-yaml  - interpolates the variables of project in yaml files at their folder.'
 	@echo '    deploy      - apply yaml files to deploy the system at the Kubernetes cluster.'
 	@echo '    clean       - gets rid of generated and volatile files and resources.'
 	@echo '    help        - this message.'
@@ -95,7 +96,7 @@ build-yaml: $(YAML_BUILD_DIR)
 		$(SHELL_EXPORT) envsubst <$(YAML_DIR)/$$file >$(YAML_BUILD_DIR)/$$file ;\
 	done 
 	@test -f $(ENV_FILE) \
-	&& @echo "Found $(ENV_FILE) file. ConfigMap $(APPLICATION)-config will be created" \
+	&& echo "Found $(ENV_FILE) file. ConfigMap $(APPLICATION)-config will be created" \
 	&& kubectl create configmap $(APPLICATION)-config -n $(PACKAGE) --from-env-file=$(ENV_FILE)
 endif
 
@@ -103,5 +104,5 @@ deploy: build-yaml
 	kubectl apply -f $(YAML_BUILD_DIR)
 
 clean:
-	@docker rmi -f $(DOCKER_IMAGE) 2>/dev/null
+	docker rmi -f $(DOCKER_IMAGE) 2>/dev/null
 	@rm -rf $(YAML_BUILD_DIR)
