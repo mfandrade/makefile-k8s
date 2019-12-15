@@ -54,7 +54,9 @@ aplicação no cluster Kubernetes.
 ## ENVIROMENT
 
 Indica o ambiente considerado para a implantação desta aplicação.  Deve ser um
-identificador, uma string tal como **homologacao** ou **producao**.
+identificador, uma string tal como **homologacao** ou **producao**.  O
+desenvolvedor deve ser responsável por eventualmente utilizar esta variável de
+ambiente fazendo seu devido tratamento dentro da aplicação. 
 
 Na implantação padrão é utilizado juntamente com o nome da aplicação, entre
 outras coisas, como label para identificar os recursos Kubernetes da aplicação. 
