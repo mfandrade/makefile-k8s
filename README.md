@@ -3,6 +3,9 @@
 Projeto template que fornece a estrutura básica para facilitar a implantação
 de aplicações no cluster Kubernetes.
 
+[![pipeline
+status](https://gitlab.trt8.jus.br/trt8/kubernetes-project/badges/master/pipeline.svg)](https://gitlab.trt8.jus.br/trt8/kubernetes-project/commits/master)
+
 # O que é este projeto?
 
 ```
