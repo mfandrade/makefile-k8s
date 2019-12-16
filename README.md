@@ -38,7 +38,7 @@ Para novos projetos:
 disponibilizada no HUB local de imagens no Gitlab.
 
 
-# Parâmetros de aplicação 
+# Parâmetros de aplicação
 
 São os parâmetros cujos valores serão interpolados nos arquivos da pasta
 `yaml/`, padronizando a construção das imagens e facilitando a implantação da
@@ -59,10 +59,10 @@ aplicação no cluster Kubernetes.
 Indica o ambiente considerado para a implantação desta aplicação.  Deve ser um
 identificador, uma string tal como **homologacao** ou **producao**.  O
 desenvolvedor deve ser responsável por eventualmente utilizar esta variável de
-ambiente fazendo seu devido tratamento dentro da aplicação. 
+ambiente fazendo seu devido tratamento dentro da aplicação.
 
 Na implantação padrão é utilizado juntamente com o nome da aplicação, entre
-outras coisas, como label para identificar os recursos Kubernetes da aplicação. 
+outras coisas, como label para identificar os recursos Kubernetes da aplicação.
 
 **Opcional:** Não
 
@@ -89,7 +89,7 @@ Certifique-se apenas de referenciar um namespace já existente, uma vez que a
 implantação padrão não cria namespaces no cluster Kubernetes.
 
 **Opcional:** Sim
-**Valor padrão:** O mesmo valor de APPLICATION. 
+**Valor padrão:** O mesmo valor de APPLICATION.
 
 
 ### IMAGE\_HUB
@@ -185,7 +185,7 @@ DB_PASS=Tribunal2019!
 Diferente dos parâmetros de configuração, variáveis de ambiente não são
 interpoladas em nenhum arquivo yaml e só são usadas na execução do container.
 Portanto, já devem estar sendo esperados pela aplicação que é onde tais
-variáveis serão efetivamente utilizadas.  
+variáveis serão efetivamente utilizadas.
 
 Na implantação padrão, as variáveis de ambiente listadas no arquivo
 `app-src/env` serão utilizadas para criar um ConfigMap Kubernetes com o mesmo
@@ -198,7 +198,7 @@ dados sensíveis como senhas de bancos em Secrets do Kuberentes._
 
 # Versionamento
 
-Para fins de desenvolvimento, por padrão a aplicação será empacotada numa imagem  
+Para fins de desenvolvimento, por padrão a aplicação será empacotada numa imagem
 Docker com a tag de versão **latest**, exceto se houver um arquivo `.version`,
 texto simples, contendo o identificador ou número de versão desejado.  Por
 exemplo:
@@ -214,14 +214,37 @@ Por exemplo:
 ```
 $ git tag -a v1.0
 ```
- 
+
 Separar a versão da aplicação dos demais parâmetros facilita na manutenção uma
 vez que se pode gerenciá-los independentemente, permitindo uma melhor gestão de
 releases e de changelog.
+
+
+# FAQ - Dúvidas comuns
+
+### A imagem da aplicação já existe e não quero regerá-la.  O que fazer?
+
+Pode ser arriscado se depender de artefatos cuja origem não se tenha certeza, daí
+a importância de poder gerar as imagens com facilidade.  Sempre é mais adequado
+gerar e manter novas versões da imagem.
+
+No entanto você pode definir a variável **BUILD\_IMAGE=false** no seu arquivo
+`app.ini` se preferir.
+
+
+### A imagem da minha aplicação foi gerada com uma tag "v1.0-dirty".  Por quê?
+
+A que a princípio não há qualquer problema que a imagem tenha um nome como esse,
+especialmente para fins de desenvolvimento.
+
+A versão da imagem ficou marcada com o sufixo "-dirty" porque você a gerou
+localmente a partir de sua cópia de trabalho do Git que não estava no estado
+"clean".  Faça commit de todas suas alterações ou salve-as num stash e gere a
+imagem novamente.
 
 
 # Sobre
 
 Este template e makefile foram inspirados no projeto
 [config-k8s-with-make](https://github.com/zikes/config-k8s-with-make) de Jason
-Hutchinson
+Hutchinson.
