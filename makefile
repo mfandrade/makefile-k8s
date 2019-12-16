@@ -60,14 +60,14 @@ help:
 image:
 ifeq ($(BUILD_IMAGE), true)
 	@echo 'Building image $(DOCKER_IMAGE)'
-	docker build $(DOCKER_BUILD_ARGS) $(SRC_DIR)
+	@docker build $(DOCKER_BUILD_ARGS) $(SRC_DIR)
 else
 	@echo 'Using image $(DOCKER_IMAGE)'
 endif
 
 release: image
 ifeq ($(BUILD_IMAGE), true)
-	docker push "$(DOCKER_IMAGE)"
+	@docker push $(DOCKER_IMAGE)
 endif
 
 docker-run: image
@@ -81,27 +81,26 @@ image-start: image
 	|| docker run -d --name $(APPLICATION)-container $(RUN_FLAGS) $(DOCKER_IMAGE)
 
 image-stop: image
-	docker stop -t 1 $(APPLICATION)
+	@docker stop -t 1 $(APPLICATION)-container
 
 
-# Build the Kubernetes build directory if it does not exist
-# The @ symbol prevents make from echoing command results.
+# Create the yaml build directory if it does not exist
 $(YAML_BUILD_DIR):
 	@mkdir -p $(YAML_BUILD_DIR)
 
 build-yaml: $(YAML_BUILD_DIR)
-	@echo "YAML files support the following vars: $(AVAILABLE_VARS)"
+	@echo 'YAML files support the following vars: $(AVAILABLE_VARS)'
 	@for file in $(YAML_FILES); do \
 		mkdir -p `dirname "$(YAML_BUILD_DIR)/$$file"` ; \
 		$(SHELL_EXPORT) envsubst <$(YAML_DIR)/$$file >$(YAML_BUILD_DIR)/$$file ;\
 	done 
 	@test -f $(ENV_FILE) \
-	&& echo "Found $(ENV_FILE) file. ConfigMap $(APPLICATION)-config will be created" \
+	&& echo 'Found $(ENV_FILE) file. ConfigMap $(APPLICATION)-config will be created' \
 	&& kubectl create configmap $(APPLICATION)-config -n $(PACKAGE) --from-env-file=$(ENV_FILE)
 
 deploy: build-yaml
-	kubectl apply -f $(YAML_BUILD_DIR)
+	@kubectl apply -f $(YAML_BUILD_DIR)
 
 clean:
-	docker rmi -f $(DOCKER_IMAGE) 2>/dev/null
+	@docker rmi -f $(DOCKER_IMAGE) 2>/dev/null
 	@rm -rf $(YAML_BUILD_DIR)
