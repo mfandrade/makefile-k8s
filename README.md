@@ -215,3 +215,10 @@ $ git tag -a v1.0
 Separar a versão da aplicação dos demais parâmetros facilita na manutenção uma
 vez que se pode gerenciá-los independentemente, permitindo uma melhor gestão de
 releases e de changelog.
+
+
+# Sobre
+
+Este template e makefile foram inspirados no projeto
+[config-k8s-with-make](https://github.com/zikes/config-k8s-with-make) de Jason
+Hutchinson
