@@ -3,6 +3,8 @@
 Projeto template que fornece a estrutura básica para facilitar a implantação
 de aplicações no cluster Kubernetes.
 
+# O que é este projeto?
+
 ```
 .
 ├── app-src/       # raíz da aplicação em desenvolvimento
@@ -12,8 +14,6 @@ de aplicações no cluster Kubernetes.
 ├── makefile       # arquivo makefile com ações comuns
 └── yaml/          # arquivos yaml onde os parâmetros serão interpolados
 ```
-
-# O que é este projeto?
 
 Além de prover uma estrutura básica para uma maior organização da
 estrutura dos projetos, também visa facilitar a execução de tarefas comuns para
@@ -167,8 +167,8 @@ de configuração mas sim variáveis de ambiente específicos da aplicação.
 Pode-se passar um conjunto de variáveis de ambiente para a aplicação por meio do
 arquivo de texto `app-src/env`.  Este é simplesmente um arquivo de texto que
 contém nomes das variáveis de ambiente e seus valores a serem repassados para o
-container da aplicação.  Trata-se do mesmo (formato dos arquivos
-.env)[https://docs.docker.com/compose/environment-variables/#the-env-file] do
+container da aplicação.  Trata-se do mesmo [formato dos arquivos
+.env](https://docs.docker.com/compose/environment-variables/#the-env-file) do
 Docker Composer.  Por exemplo:
 
 ```
