@@ -24,25 +24,154 @@ implantação do projeto no cluster Kubernetes, diminuindo a propensão a erros 
 tornando mais fácil e estruturado o fluxo de trabalho.
 
 
+-------------------------------------------------------------------------------
 # Fluxo de trabalho
 
 Para novos projetos:
 
-1. Crie um repositório para seu projeto neste Gitlab;
-1. Clone o repositório criado para sua estação de trabalho;
-1. Crie a estrutura mínima padrão em sua cópia de trabalho;
-1. Informe parâmetros de seu projeto no app.ini;
-1. Ponha os códigos-fontes na pasta raíz da aplicação;
-1. Escreva o Dockerfile para a imagem da sua aplicação;
-1. Relacione as variáveis de ambiente utilizadas pela aplicação;
-1. Teste a execução de sua aplicação localmente;
-1. Faça planejamento de releases de sua aplicação;
-1. Suba sua aplicação para o repositório no Gitlab.
+1. [Crie um repositório para seu projeto neste Gitlab](#crie-um-repositório-para-seu-projeto-neste-gitlab);
+1. [Clone o repositório criado para sua estação de trabalho](#clone-o-repositório-criado-para-sua-estação-de-trabalho);
+1. [Crie a estrutura mínima padrão em sua cópia de trabalho](#crie-a-estrutura-mínima-padrão-em-sua-cópia-de-trabalho);
+1. [Informe os parâmetros de seu projeto no arquivo app.ini](#informe-os-parâmetros-de-seu-projeto-no-arquivo-app.ini);
+1. [Ponha os códigos-fontes na pasta raíz da aplicação](#ponha-os-códigos-fontes-na-pasta-raíz-da-sua-aplicação);
+1. [Escreva o Dockerfile para a imagem da sua aplicação](#escreva-o-dockerfile-para-a-imagem-da-sua-aplicação);
+1. [Relacione as variáveis de ambiente utilizadas pela aplicação](#relacione-as-variáveis-de-ambiente-utilizadas-pela-aplicação);
+1. [Teste a execução de sua aplicação localmente](#teste-a-execução-de-sua-aplicação-localmente);
+1. [Suba sua aplicação para o repositório no Gitlab](#suba-sua-aplicação-para-o-repositório-no-gitlab).
 
 **Resultado:** Você deve obter a imagem da sua aplicação construída e
 disponibilizada no HUB local de imagens no Gitlab.
 
 
+-------------------------------------------------------------------------------
+## Crie um repositório para seu projeto neste Gitlab
+Esta deve ser uma etapa trivial a você neste momento: essencialmente apenas
+acesse este Gitlab e clique no botão verde **"New project"** no canto superior
+direito ou faça fork de algum outro projeto.
+
+Para mais informações, [consulte a documentação](https://docs.gitlab.com/ee/user/project/repository/#create-a-repository).
+
+
+## Clone o repositório criado para sua estação de trabalho
+Supondo que você criou um projeto chamado "my-project" dentro do grupo "group",
+você pode cloná-lo para sua estação de trabalho com:
+```shell
+$ git clone git@gitlab.trt8.jus.br:/group/my-project.git
+```
+
+...ou com:
+```shell
+$ git clone https://gitlab.trt8.jus.br/group/my-project.git
+$ cd my-project
+```
+
+Para mais informações, [consulte a documentação](https://docs.gitlab.com/ee/gitlab-basics/start-using-git.html#clone-a-repository)’.
+
+
+## Crie a estrutura mínima padrão em sua cópia de trabalho
+A estrutura mínima do projeto inclui o arquivo a pasta raíz da aplicação
+`app-src/`, um arquivo de parâmetros do projeto `app.ini` e  uma cópia do
+arquivo `makefile`:
+
+```shell
+$ mkdir app-src
+$ echo > app.ini
+$ curl -sO https://gitlab.trt8.jus.br/trt8/kubernetes-project/raw/clean/makefile
+```
+
+## Informe os parâmetros de seu projeto no arquivo app.ini
+O conjunto de parâmetros de projeto na implantação padrão são:
+
+* ENVIRONMENT
+* APPLICATION
+* NAMESPACE
+* IMAGE\_HUB
+* IMAGE\_NAME
+* APP\_BACKEND\_PORT
+* APP\_ENDPOINT\_PATH
+* APP\_ENDPOINT\_URL
+
+Apenas `ENVIRONMENT` é efetivamente obrigatório.  Os três últimos serão
+obrigatórios para se disponibilizar a aplicação no cluster Kubernetes.
+
+```shell
+$ cat <<EOF > app.ini
+APPLICATION = my-project
+ENVIRONMENT = desenvolvimento
+
+APP_BACKEND_PORT  = 8080
+APP_ENDPOINT_URL  = my-project.trt8.jus.br
+APP_ENDPOINT_PATH = /home
+
+```
+
+Mais informações sobre estes parâmetros abaixo na seção [Parâmetros de aplicação](#parâmetros-de-aplicação).
+
+
+## Ponha os códigos-fontes na pasta raíz da aplicação;
+Sem mistério.  Desenvolva sua aplicação tendo por raíz a pasta `app-src/` seja
+apontando sua IDE para lá ou apenas copiand seus códigos-fonte para esta pasta.
+
+
+## Escreva o Dockerfile para a imagem da sua aplicação
+Escreva o Dockerfile para geração da imagem de sua aplicação em
+`app-src/Dockerfile`.  São necessários conhecimentos básicos de Docker.
+
+Não deixe de consultar a [documentação de referência para o Dockerfile](https://docs.docker.com/engine/reference/builder/#format).
+
+
+## Relacione as variáveis de ambiente utilizadas pela aplicação;
+Se sua aplicação utilizar variáveis de ambiente, relacione-as com os valores
+adequados criando um arquivo de texto simples `app-src/env`.  Este arquivo deve
+conter as variáveis de ambiente, uma por linha, num formato _CHAVE=valor_,
+segundo mesmo formato do [arquivo .env](https://docs.docker.com/compose/environment-variables/#the-env-file)
+do Docker Compose.
+
+Valores como locais de arquivos, variáveis de bancos de dados, e outros dados
+voláteis do tipo são melhores candidatos a variáveis de ambiente para constar
+neste arquivo.
+
+
+## Teste a execução de sua aplicação localmente;
+Se sua aplicação estiver funcional e seu Dockerfile estiver sem erros, será
+possivel gerar uma imagem da sua aplicação neste momento com:
+```shell
+$ make image
+```
+
+Para testar sua aplicação localmente, você pode fazer:
+```shell
+$ make docker-run
+```
+
+**NOTA:** Você pode preferir executar a aplicação em segundo plano com `make
+image-start` e pará-la com `make image-stop`.
+
+Como você talvez esteja desenvolvendo uma aplicação web, você provavelmente vai
+querer passar flags para esta execução do Docker, por exemplo, para mapear a
+porta principal na qual a aplicação escuta.  Faça isso incluindo o parâmetro
+**RUN_FLAGS** no arquivo `app.ini` antes de executar o Docker.
+```shell
+$ echo 'RUN_FLAGS = -p 8080:8080' >> app.ini
+$ make docker-run
+```
+
+
+## Suba sua aplicação para o repositório no Gitlab
+Tudo pronto, disponibilize sua aplicação no Gitlab.
+
+```shell
+$ git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+nothing to commit, working tree clean
+
+$ git push origin master
+```
+
+
+-------------------------------------------------------------------------------
 # Parâmetros de aplicação
 
 São os parâmetros cujos valores serão interpolados nos arquivos da pasta
@@ -162,6 +291,7 @@ aplicação ou microsserviço.
 
 
 
+-------------------------------------------------------------------------------
 # Variáveis de ambiente (da aplicação)
 
 Enquanto esses parâmetros de aplicação são utilizados como forma padronizada
@@ -201,6 +331,7 @@ sempre como ConfigMap.  Atente, porém, que talvez seja mais adequado armazenar
 dados sensíveis como senhas de bancos em Secrets do Kuberentes._
 
 
+-------------------------------------------------------------------------------
 # Versionamento
 
 Para fins de desenvolvimento, por padrão a aplicação será empacotada numa imagem
@@ -225,6 +356,7 @@ vez que se pode gerenciá-los independentemente, permitindo uma melhor gestão d
 releases e de changelog.
 
 
+-------------------------------------------------------------------------------
 # FAQ - Dúvidas comuns
 
 ### A imagem da aplicação já existe e não quero regerá-la.  O que fazer?
@@ -248,6 +380,7 @@ localmente a partir de sua cópia de trabalho do Git que não estava no estado
 imagem novamente.
 
 
+-------------------------------------------------------------------------------
 # Sobre
 
 Este template e makefile foram inspirados no projeto
