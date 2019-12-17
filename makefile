@@ -1,6 +1,9 @@
 # v1.1.0
 include app.ini
 
+ifndef ENVIRONMENT
+$(error "ENVIRONMENT is undefined. This is the only mandatory parameter that need to be present in app.ini")
+endif
 APPLICATION ?= $(shell basename $(CURDIR))
 NAMESPACE   ?= $(APPLICATION)
 PACKAGE     := $(NAMESPACE)
