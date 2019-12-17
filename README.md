@@ -29,6 +29,7 @@ tornando mais fácil e estruturado o fluxo de trabalho.
 Para novos projetos:
 
 1. Crie sua aplicação a partir de um fork de `trt8/kubernetes-project`;
+1. Troque para o branch `skeleton` para usar a estrutura mínima sem o app de exemplo;
 1. Disponibilize o código-fonte da aplicação dentro de app-src;
 1. Inclua ali também um Dockerfile para a imagem da sua aplicação;
 1. Configure os parâmetros da aplicação no arquivo app.ini;
