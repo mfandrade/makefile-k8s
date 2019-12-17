@@ -104,7 +104,7 @@ exemplo, referenciar à imagem do HUB de alguma outra regional.
 
 ### IMAGE\_NAME
 
-Nome da imagem relativo a `IMAGE\_HUB`.  Por padrão este valor é obtido a partir
+Nome da imagem relativo a `IMAGE_HUB`.  Por padrão este valor é obtido a partir
 do nome do repositório onde o projeto está versionado.  Caso necessite-se
 alterar para um valor diferente, preciso que seja um valor com [nome de
 imagem](https://gitlab.trt8.jus.br/trt8/kubernetes-project/container_registry)
