@@ -1,3 +1,4 @@
+---
 kind: Ingress
 apiVersion: extensions/v1beta1
 metadata:
@@ -7,7 +8,7 @@ metadata:
     app: ${APPLICATION}
     env: ${ENVIRONMENT}
   annotations:
-    nginx.ingress.kubernetes.io/app-root: ${APP_ENDPOINT_PATH} 
+    nginx.ingress.kubernetes.io/app-root: ${APP_ENDPOINT_PATH}
 spec:
   tls:
   - hosts:
