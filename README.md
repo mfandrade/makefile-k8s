@@ -28,12 +28,16 @@ tornando mais fácil e estruturado o fluxo de trabalho.
 
 Para novos projetos:
 
-1. Crie sua aplicação a partir de um fork de `trt8/kubernetes-project`;
-1. Troque para o branch `skeleton` para usar a estrutura mínima sem o app de exemplo;
-1. Disponibilize o código-fonte da aplicação dentro de app-src;
-1. Inclua ali também um Dockerfile para a imagem da sua aplicação;
-1. Configure os parâmetros da aplicação no arquivo app.ini;
-1. Suba os arquivos para o Gitlab.
+1. Crie um repositório para seu projeto neste Gitlab;
+1. Clone o repositório criado para sua estação de trabalho;
+1. Crie a estrutura mínima padrão em sua cópia de trabalho;
+1. Informe parâmetros de seu projeto no app.ini;
+1. Ponha os códigos-fontes na pasta raíz da aplicação;
+1. Escreva o Dockerfile para a imagem da sua aplicação;
+1. Relacione as variáveis de ambiente utilizadas pela aplicação;
+1. Teste a execução de sua aplicação localmente;
+1. Faça planejamento de releases de sua aplicação;
+1. Suba sua aplicação para o repositório no Gitlab.
 
 **Resultado:** Você deve obter a imagem da sua aplicação construída e
 disponibilizada no HUB local de imagens no Gitlab.
