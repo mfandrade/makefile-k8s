@@ -1,8 +1,9 @@
-# v1.0.0
+# v1.1.0
 include app.ini
 
 APPLICATION ?= $(shell basename $(CURDIR))
-PACKAGE     ?= $(APPLICATION)
+NAMESPACE   ?= $(APPLICATION)
+PACKAGE     := $(NAMESPACE)
 VERSION     := $(shell git describe --tags --dirty --match="v*" 2> /dev/null || cat $(CURDIR)/.version 2> /dev/null)
 ifndef VERSION
 VERSION     := latest
@@ -93,7 +94,7 @@ build-yaml: $(YAML_BUILD_DIR)
 	@for file in $(YAML_FILES); do \
 		mkdir -p `dirname "$(YAML_BUILD_DIR)/$$file"` ; \
 		$(SHELL_EXPORT) envsubst <$(YAML_DIR)/$$file >$(YAML_BUILD_DIR)/$$file ;\
-	done 
+	done
 	@test -f $(ENV_FILE) \
 	&& echo 'Found $(ENV_FILE) file. ConfigMap $(APPLICATION)-config will be created' \
 	&& kubectl create configmap $(APPLICATION)-config -n $(PACKAGE) --from-env-file=$(ENV_FILE)

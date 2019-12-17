@@ -47,7 +47,7 @@ aplicação no cluster Kubernetes.
 
 * ENVIRONMENT
 * APPLICATION
-* PACKAGE
+* NAMESPACE
 * IMAGE\_HUB
 * IMAGE\_NAME
 * APP\_BACKEND\_PORT
@@ -80,7 +80,7 @@ outras coisas, como label para identificar os recursos Kubernetes da aplicação
 **Valor padrão:** O mesmo nome da pasta do repositório da aplicação no Gitlab.
 
 
-### PACKAGE
+### NAMESPACE
 
 Nome do grupo de aplicações logicamente relacionadas ao qual esta aplicação ou
 microsserviço faz parte.  Utilizado essencialmente para fins de organização.
