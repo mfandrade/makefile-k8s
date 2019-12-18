@@ -62,7 +62,6 @@ $ git clone git@gitlab.trt8.jus.br:/group/my-project.git
 ...ou com:
 ```shell
 $ git clone https://gitlab.trt8.jus.br/group/my-project.git
-$ cd my-project
 ```
 
 Para mais informações, [consulte a documentação](https://docs.gitlab.com/ee/gitlab-basics/start-using-git.html#clone-a-repository)’.
@@ -74,6 +73,7 @@ A estrutura mínima do projeto inclui o arquivo a pasta raíz da aplicação
 arquivo `makefile`:
 
 ```shell
+$ cd my-project
 $ mkdir app-src
 $ echo > app.ini
 $ curl -sO https://gitlab.trt8.jus.br/trt8/kubernetes-project/raw/clean/makefile
@@ -95,14 +95,15 @@ Apenas `ENVIRONMENT` é efetivamente obrigatório.  Os três últimos serão
 obrigatórios para se disponibilizar a aplicação no cluster Kubernetes.
 
 ```shell
-$ cat <<EOF > app.ini
+$ cat <<END > app.ini
 APPLICATION = my-project
 ENVIRONMENT = desenvolvimento
 
 APP_BACKEND_PORT  = 8080
 APP_ENDPOINT_URL  = my-project.trt8.jus.br
-APP_ENDPOINT_PATH = /home
+APP_ENDPOINT_PATH = /myapp
 
+END
 ```
 
 Mais informações sobre estes parâmetros abaixo na seção [Parâmetros de aplicação](#parâmetros-de-aplicação).
