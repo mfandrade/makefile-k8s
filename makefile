@@ -1,4 +1,4 @@
-# v1.1.0
+# v1.1.1
 include app.ini
 
 ifndef ENVIRONMENT
@@ -31,7 +31,7 @@ DOCKER_IMAGE := $(IMAGE_HUB)/$(IMAGE_NAME):$(VERSION)
 ifndef BUILD_ARGS
 DOCKER_BUILD_ARGS := -t $(DOCKER_IMAGE)
 else
-DOCKER_BUILD_ARGS := --build-arg $(BUILD_ARGS) -t $(DOCKER_IMAGE)
+DOCKER_BUILD_ARGS := $(shell echo ' $(BUILD_ARGS)' | sed 's:\ : --build-arg :g') -t $(DOCKER_IMAGE)
 endif
 
 
