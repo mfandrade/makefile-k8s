@@ -27,6 +27,7 @@ YAML_FILES     := $(shell find $(YAML_DIR) -name '*.yaml' 2>/dev/null | sed 's:$
 SRC_DIR     ?= ./src
 ENV_FILE    ?= $(SRC_DIR)/env
 
+K8S_DEPLOY  ?= false
 BUILD_IMAGE ?= true
 IMAGE_HUB   ?= registry.trt8.jus.br
 IMAGE_NAME  ?= $(shell git remote -v | sed -ne '1 s:^origin.*gitlab\.trt8\.jus\.br[:/]\(.*\)\.git.*$$:\1:p')
@@ -106,12 +107,19 @@ build-yaml: $(YAML_BUILD_DIR)
 		mkdir -p `dirname "$(YAML_BUILD_DIR)/$$file"` ; \
 		$(SHELL_EXPORT) envsubst <$(YAML_DIR)/$$file >$(YAML_BUILD_DIR)/$$file ;\
 	done
+ifeq ($(K8S_DEPLOY), true)
 	@test -f $(ENV_FILE) \
 	&& echo 'Found $(ENV_FILE) file. ConfigMap $(APPLICATION)-config will be created' \
 	&& kubectl create configmap $(APPLICATION)-config -n $(PACKAGE) --from-env-file=$(ENV_FILE)
+endif
 
 deploy: build-yaml
+ifeq ($(K8S_DEPLOY), true)
+	@echo 'Deploying project to Kubernetes...'
 	@kubectl apply -f $(YAML_BUILD_DIR)
+else
+	@echo 'Configured to not deploy to Kubernetes.  Skipping.'
+endif
 
 clean:
 	@docker rmi -f $(DOCKER_IMAGE) 2>/dev/null

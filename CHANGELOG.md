@@ -17,7 +17,7 @@ Todas as alterações significativas neste projeto.
 ## [1.2.0] - 2019-01-14
 - Renomeada pasta default da aplicação de app-src para apenas src.
 - Corrigido teste para variável IMAGE\_NAME e ENVIRONMENT vazias.
-
+- Adicionada variável K8S\_DEPLOY.
 
 _O formato deste documento foi baseado no [Mantenha um
 Changelog](https://keepachangelog.com/pt-BR/0.3.0/) e este projeto é aderente ao
