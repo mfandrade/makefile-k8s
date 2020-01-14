@@ -1,12 +1,20 @@
-# v1.1.1
+# v1.2.0
+ifeq (,$(wildcard ./app.ini))
+$(error "The file app.ini was not found.  Please create it in the project root folder.")
+else
 include app.ini
+endif
+
 
 ifndef ENVIRONMENT
-$(error "ENVIRONMENT is undefined. This is the only mandatory parameter that need to be present in app.ini")
+$(error "The ENVIRONMENT variable is undefined.  Please, define its value in app.ini file.")
 endif
 APPLICATION ?= $(shell basename $(CURDIR))
 NAMESPACE   ?= $(APPLICATION)
 PACKAGE     := $(NAMESPACE)
+ifeq (,$(wildcard ./.git))
+$(error "This project is still not version controlled.  Please initialize a git repo and add a remote to it.")
+endif
 VERSION     := $(shell git describe --tags --dirty --match="v*" 2> /dev/null || cat $(CURDIR)/.version 2> /dev/null)
 ifndef VERSION
 VERSION     := latest
@@ -14,9 +22,9 @@ endif
 
 YAML_DIR       ?= ./yaml
 YAML_BUILD_DIR := ./.build_yaml
-YAML_FILES     := $(shell find $(YAML_DIR) -name '*.yaml' | sed 's:$(YAML_DIR)/::g')
+YAML_FILES     := $(shell find $(YAML_DIR) -name '*.yaml' 2>/dev/null | sed 's:$(YAML_DIR)/::g')
 
-SRC_DIR     ?= ./app-src
+SRC_DIR     ?= ./src
 ENV_FILE    ?= $(SRC_DIR)/env
 
 BUILD_IMAGE ?= true

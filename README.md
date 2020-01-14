@@ -10,7 +10,7 @@ status](https://gitlab.trt8.jus.br/trt8/kubernetes-project/badges/master/pipelin
 
 ```
 .
-├── app-src/       # raíz da aplicação em desenvolvimento
+├── src/           # raíz da aplicação em desenvolvimento
 │   ├── Dockerfile # Dockerfile para geração da imagem
 │   └── env        # variáveis de ambiente usadas pela imagem
 ├── app.ini        # arquivo de parâmetros da aplicação
@@ -69,12 +69,12 @@ Para mais informações, [consulte a documentação](https://docs.gitlab.com/ee/
 
 ## Crie a estrutura mínima padrão em sua cópia de trabalho
 A estrutura mínima do projeto inclui o arquivo a pasta raíz da aplicação
-`app-src/`, um arquivo de parâmetros do projeto `app.ini` e  uma cópia do
+`src/`, um arquivo de parâmetros do projeto `app.ini` e  uma cópia do
 arquivo `makefile`:
 
 ```shell
 $ cd my-project
-$ mkdir app-src
+$ mkdir src
 $ echo > app.ini
 $ curl -sO https://gitlab.trt8.jus.br/trt8/kubernetes-project/raw/clean/makefile
 ```
@@ -110,20 +110,20 @@ Mais informações sobre estes parâmetros abaixo na seção [Parâmetros de apl
 
 
 ## Ponha os códigos-fontes na pasta raíz da aplicação;
-Sem mistério.  Desenvolva sua aplicação tendo por raíz a pasta `app-src/` seja
+Sem mistério.  Desenvolva sua aplicação tendo por raíz a pasta `src/` seja
 apontando sua IDE para lá ou apenas copiand seus códigos-fonte para esta pasta.
 
 
 ## Escreva o Dockerfile para a imagem da sua aplicação
 Escreva o Dockerfile para geração da imagem de sua aplicação em
-`app-src/Dockerfile`.  São necessários conhecimentos básicos de Docker.
+`src/Dockerfile`.  São necessários conhecimentos básicos de Docker.
 
 Não deixe de consultar a [documentação de referência para o Dockerfile](https://docs.docker.com/engine/reference/builder/#format).
 
 
 ## Relacione as variáveis de ambiente utilizadas pela aplicação;
 Se sua aplicação utilizar variáveis de ambiente, relacione-as com os valores
-adequados criando um arquivo de texto simples `app-src/env`.  Este arquivo deve
+adequados criando um arquivo de texto simples `src/env`.  Este arquivo deve
 conter as variáveis de ambiente, uma por linha, num formato _CHAVE=valor_,
 segundo mesmo formato do [arquivo .env](https://docs.docker.com/compose/environment-variables/#the-env-file)
 do Docker Compose.
@@ -304,14 +304,14 @@ Por não serem suficientemente genéricos, dados desta natureza não são parâm
 de configuração mas sim variáveis de ambiente específicos da aplicação.
 
 Pode-se passar um conjunto de variáveis de ambiente para a aplicação por meio do
-arquivo de texto `app-src/env`.  Este é simplesmente um arquivo de texto que
+arquivo de texto `src/env`.  Este é simplesmente um arquivo de texto que
 contém nomes das variáveis de ambiente e seus valores a serem repassados para o
 container da aplicação.  Trata-se do mesmo [formato dos arquivos
 .env](https://docs.docker.com/compose/environment-variables/#the-env-file) do
 Docker Composer.  Por exemplo:
 
 ```
-$ cat app-src/env
+$ cat src/env
 DB_HOST=srv-mysql
 DB_NAME=myapp
 DB_USER=dbuser
@@ -324,7 +324,7 @@ Portanto, já devem estar sendo esperados pela aplicação que é onde tais
 variáveis serão efetivamente utilizadas.
 
 Na implantação padrão, as variáveis de ambiente listadas no arquivo
-`app-src/env` serão utilizadas para criar um ConfigMap Kubernetes com o mesmo
+`src/env` serão utilizadas para criar um ConfigMap Kubernetes com o mesmo
 nome da aplicação e sufixo "-config" (`${APPLICATION}-config`).
 
 _**OBS:** A implantação padrão irá colocar as variáveis de ambiente da aplicação
