@@ -5,7 +5,7 @@ else
 include app.ini
 endif
 
-ifndef ENVIRONMENT
+ifeq ($(strip $(ENVIRONMENT)),)
 $(error "The ENVIRONMENT variable is undefined.  Please, define its value in app.ini file.")
 endif
 APPLICATION ?= $(shell basename $(CURDIR))
@@ -30,7 +30,7 @@ ENV_FILE    ?= $(SRC_DIR)/env
 BUILD_IMAGE ?= true
 IMAGE_HUB   ?= registry.trt8.jus.br
 IMAGE_NAME  ?= $(shell git remote -v | sed -ne '1 s:^origin.*gitlab\.trt8\.jus\.br[:/]\(.*\)\.git.*$$:\1:p')
-ifeq ($(IMAGE_NAME),)
+ifeq ($(strip $(IMAGE_NAME)),)
 $(error "The IMAGE_NAME is undefined.  Please, define it on app.ini or clone a repo from gitlab.trt8.jus.br.")
 endif
 
