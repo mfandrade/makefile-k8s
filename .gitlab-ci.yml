@@ -2,10 +2,6 @@ before_script:
   - wget -q https://gitlab.trt8.jus.br/trt8/kubernetes-project/raw/clean/makefile
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
-test:
-  script:
-    - make docker-run
-
 build:
   script:
     - make clean release
