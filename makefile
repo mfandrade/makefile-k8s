@@ -5,7 +5,6 @@ else
 include app.ini
 endif
 
-
 ifndef ENVIRONMENT
 $(error "The ENVIRONMENT variable is undefined.  Please, define its value in app.ini file.")
 endif
@@ -15,6 +14,7 @@ PACKAGE     := $(NAMESPACE)
 ifeq (,$(wildcard ./.git))
 $(error "This project is still not version controlled.  Please initialize a git repo and add a remote to it.")
 endif
+
 VERSION     := $(shell git describe --tags --dirty --match="v*" 2> /dev/null || cat $(CURDIR)/.version 2> /dev/null)
 ifndef VERSION
 VERSION     := latest
@@ -30,8 +30,8 @@ ENV_FILE    ?= $(SRC_DIR)/env
 BUILD_IMAGE ?= true
 IMAGE_HUB   ?= registry.trt8.jus.br
 IMAGE_NAME  ?= $(shell git remote -v | sed -ne '1 s:^origin.*gitlab\.trt8\.jus\.br[:/]\(.*\)\.git.*$$:\1:p')
-ifndef IMAGE_NAME
-$(error "IMAGE_NAME is undefined. Please define it on app.ini or clone a repo from gitlab.trt8.jus.br")
+ifeq ($(IMAGE_NAME),)
+$(error "The IMAGE_NAME is undefined.  Please, define it on app.ini or clone a repo from gitlab.trt8.jus.br.")
 endif
 
 DOCKER_IMAGE := $(IMAGE_HUB)/$(IMAGE_NAME):$(VERSION)
