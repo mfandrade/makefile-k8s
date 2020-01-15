@@ -111,7 +111,8 @@ ifeq ($(K8S_DEPLOY), true)
 	@test -f $(ENV_FILE) \
 	&& echo 'Found $(ENV_FILE) file. ConfigMap $(APPLICATION)-config will be created' \
 	&& kubectx cluster-$(ENVIRONMENT) \
-	&& kubectl create configmap $(APPLICATION)-config -n $(PACKAGE) --from-env-file=$(ENV_FILE)
+	&& kubectl create configmap $(APPLICATION)-config -n $(PACKAGE) --from-env-file=$(ENV_FILE) --dry-run -o yaml \
+	| kubectl apply -f -
 endif
 
 deploy: build-yaml
