@@ -1,4 +1,4 @@
-# v1.3.0
+# v1.3.1
 ifeq (,$(wildcard ./app.ini))
 $(error "The file app.ini was not found.  Please create it in the project root folder.")
 else
@@ -107,23 +107,22 @@ build-yaml: $(YAML_BUILD_DIR)
 		mkdir -p `dirname "$(YAML_BUILD_DIR)/$$file"` ; \
 		$(SHELL_EXPORT) envsubst <$(YAML_DIR)/$$file >$(YAML_BUILD_DIR)/$$file ;\
 	done
-ifeq ($(K8S_DEPLOY), true)
-	@test -f $(ENV_FILE) \
-	&& echo 'Found $(ENV_FILE) file. ConfigMap $(APPLICATION)-config will be created' \
-	&& kubectx cluster-$(ENVIRONMENT) \
-	&& kubectl create configmap $(APPLICATION)-config -n $(PACKAGE) --from-env-file=$(ENV_FILE) --dry-run -o yaml \
-	| kubectl apply -f -
-endif
 
 deploy: build-yaml
 ifeq ($(K8S_DEPLOY), true)
-	@echo 'Deploying project to Kubernetes...' \
-	&& kubectx cluster-$(ENVIRONMENT) \
-	&& kubectl apply -f $(YAML_BUILD_DIR)
+	@kubectx cluster-$(ENVIRONMENT)
+
+	@test -f $(ENV_FILE) \
+	&& echo 'Found $(ENV_FILE) file. ConfigMap $(APPLICATION)-config will be created' \
+	&& kubectl create configmap $(APPLICATION)-config -n $(PACKAGE) --from-env-file=$(ENV_FILE)
+
+	@echo 'Deploying project to Kubernetes...'
+	@kubectl apply -f $(YAML_BUILD_DIR)
 else
 	@echo 'Configured to not deploy to Kubernetes.  Skipping.'
 endif
 
 clean:
-	@docker rmi -f $(DOCKER_IMAGE) 2>/dev/null
+	@docker image rm -f $(DOCKER_IMAGE) 2>/dev/null
+	@docker image prune -f 2>/dev/null
 	@rm -rf $(YAML_BUILD_DIR)
