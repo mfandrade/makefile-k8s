@@ -112,11 +112,9 @@ deploy: build-yaml
 ifeq ($(K8S_DEPLOY), true)
 	@kubectx cluster-$(ENVIRONMENT)
 
-	@test -f $(ENV_FILE) \
-	&& echo 'Found $(ENV_FILE) file. ConfigMap $(APPLICATION)-config will be created' \
-	&& kubectl create configmap $(APPLICATION)-config -n $(PACKAGE) --from-env-file=$(ENV_FILE)
-
-	@echo 'Deploying project to Kubernetes...'
+	@test -f $(ENV_FILE) && \
+	kubectl create configmap $(APPLICATION)-config -n $(PACKAGE) --from-env-file=$(ENV_FILE) -o yaml --dry-run \
+	| kubectl apply -f -
 	@kubectl apply -f $(YAML_BUILD_DIR)
 else
 	@echo 'Configured to not deploy to Kubernetes.  Skipping.'
