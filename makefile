@@ -1,4 +1,4 @@
-# v1.2.0
+# v1.3.0
 ifeq (,$(wildcard ./app.ini))
 $(error "The file app.ini was not found.  Please create it in the project root folder.")
 else
@@ -110,13 +110,15 @@ build-yaml: $(YAML_BUILD_DIR)
 ifeq ($(K8S_DEPLOY), true)
 	@test -f $(ENV_FILE) \
 	&& echo 'Found $(ENV_FILE) file. ConfigMap $(APPLICATION)-config will be created' \
+	&& kubectx cluster-$(ENVIRONMENT) \
 	&& kubectl create configmap $(APPLICATION)-config -n $(PACKAGE) --from-env-file=$(ENV_FILE)
 endif
 
 deploy: build-yaml
 ifeq ($(K8S_DEPLOY), true)
-	@echo 'Deploying project to Kubernetes...'
-	@kubectl apply -f $(YAML_BUILD_DIR)
+	@echo 'Deploying project to Kubernetes...' \
+	&& kubectx cluster-$(ENVIRONMENT) \
+	&& kubectl apply -f $(YAML_BUILD_DIR)
 else
 	@echo 'Configured to not deploy to Kubernetes.  Skipping.'
 endif
