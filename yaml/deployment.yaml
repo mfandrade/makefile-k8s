@@ -26,6 +26,11 @@ spec:
       - name: ${APPLICATION}-container
         image: ${DOCKER_IMAGE}
         imagePullPolicy: Always
+        env:
+        - name: ENVIRONMENT
+          value: $(ENVIRONMENT)
+        - name: APPLICATION
+          value: $(APPLICATION)
         ports:
         - containerPort: ${APP_BACKEND_PORT}
 

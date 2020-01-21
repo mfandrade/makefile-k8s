@@ -27,6 +27,11 @@ YAML_FILES     := $(shell find $(YAML_DIR) -name '*.yaml' 2>/dev/null | sed 's:$
 SRC_DIR     ?= ./src
 ENV_FILE    ?= $(SRC_DIR)/env
 
+ENV_FLAGS := "-e APPLICATION=$(APPLICATION) -e ENVIRONMENT=$(ENVIRONMENT)"
+ifeq ($(strip $(ENV_FILE)),)
+	ENV_FLAGS += "--env-file=$(ENV_FILE)"
+endif
+
 K8S_DEPLOY  ?= false
 BUILD_IMAGE ?= true
 IMAGE_HUB   ?= registry.trt8.jus.br
@@ -84,14 +89,10 @@ ifeq ($(BUILD_IMAGE), true)
 endif
 
 docker-run: image
-	@test -f $(ENV_FILE) \
-	&& docker run --rm --name $(APPLICATION)-container $(RUN_FLAGS) --env-file=$(ENV_FILE) $(DOCKER_IMAGE) \
-	|| docker run --rm --name $(APPLICATION)-container $(RUN_FLAGS) $(DOCKER_IMAGE)
+	@docker run --rm --name $(APPLICATION)-container $(ENV_FLAGS) $(RUN_FLAGS) $(DOCKER_IMAGE)
 
 image-start: image
-	@test -f $(ENV_FILE) \
-	&& docker run -d --name $(APPLICATION)-container $(RUN_FLAGS) --env-file=$(ENV_FILE) $(DOCKER_IMAGE) \
-	|| docker run -d --name $(APPLICATION)-container $(RUN_FLAGS) $(DOCKER_IMAGE)
+	@docker run -d -t --name $(APPLICATION)-container $(ENV_FLAGS) $(RUN_FLAGS) $(DOCKER_IMAGE)
 
 image-stop: image
 	@docker stop -t 1 $(APPLICATION)-container
