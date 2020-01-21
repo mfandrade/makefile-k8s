@@ -27,9 +27,9 @@ YAML_FILES     := $(shell find $(YAML_DIR) -name '*.yaml' 2>/dev/null | sed 's:$
 ENV_FILE       ?= ./src/env
 DOCKERFILE_DIR := .
 
-ENV_FLAGS := "-e APPLICATION=$(APPLICATION) -e ENVIRONMENT=$(ENVIRONMENT)"
-ifeq ($(strip $(ENV_FILE)),)
-	ENV_FLAGS += "--env-file=$(ENV_FILE)"
+ENV_FLAGS := -e APPLICATION=$(APPLICATION) -e ENVIRONMENT=$(ENVIRONMENT)
+ifneq (,$(wildcard $(ENV_FILE)))
+	ENV_FLAGS += --env-file=$(ENV_FILE)
 endif
 
 K8S_DEPLOY  ?= false
@@ -78,24 +78,24 @@ help:
 image:
 ifeq ($(BUILD_IMAGE), true)
 	@echo 'Building image $(DOCKER_IMAGE)'
-	@docker build $(DOCKER_BUILD_ARGS) $(DOCKERFILE_DIR)
+	docker build $(DOCKER_BUILD_ARGS) $(DOCKERFILE_DIR)
 else
 	@echo 'Using image $(DOCKER_IMAGE)'
 endif
 
 release: image
 ifeq ($(BUILD_IMAGE), true)
-	@docker push $(DOCKER_IMAGE)
+	docker push $(DOCKER_IMAGE)
 endif
 
 docker-run: image
-	@docker run --rm --name $(APPLICATION)-container $(ENV_FLAGS) $(RUN_FLAGS) $(DOCKER_IMAGE)
+	docker run --rm --name $(APPLICATION)-container $(ENV_FLAGS) $(RUN_FLAGS) $(DOCKER_IMAGE)
 
 image-start: image
-	@docker run -d -t --name $(APPLICATION)-container $(ENV_FLAGS) $(RUN_FLAGS) $(DOCKER_IMAGE)
+	docker run -d -t --name $(APPLICATION)-container $(ENV_FLAGS) $(RUN_FLAGS) $(DOCKER_IMAGE)
 
 image-stop: image
-	@docker stop -t 1 $(APPLICATION)-container
+	docker stop -t 1 $(APPLICATION)-container
 
 
 # Create the yaml build directory if it does not exist
@@ -111,17 +111,18 @@ build-yaml: $(YAML_BUILD_DIR)
 
 deploy: build-yaml
 ifeq ($(K8S_DEPLOY), true)
-	@kubectx cluster-$(ENVIRONMENT)
+	kubectx cluster-$(ENVIRONMENT)
 
-	@test -f $(ENV_FILE) && \
+ifneq (,$(wildcard $(ENV_FILE)))
 	kubectl create configmap $(APPLICATION)-config -n $(PACKAGE) --from-env-file=$(ENV_FILE) -o yaml --dry-run \
 	| kubectl apply -f -
-	@kubectl apply -f $(YAML_BUILD_DIR)
+endif
+	kubectl apply -f $(YAML_BUILD_DIR)
 else
 	@echo 'Configured to not deploy to Kubernetes.  Skipping.'
 endif
 
 clean:
-	@docker image rm -f $(DOCKER_IMAGE) 2>/dev/null
-	@docker image prune -f 2>/dev/null
-	@rm -rf $(YAML_BUILD_DIR)
+	docker image rm -f $(DOCKER_IMAGE) 2>/dev/null
+	docker image prune -f 2>/dev/null
+	rm -rf $(YAML_BUILD_DIR)

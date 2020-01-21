@@ -30,6 +30,8 @@ Todas as alterações significativas neste projeto.
   - Melhorada lógica para teste do arquivo env e definição de ENV\_FLAGS
   - Adicionadas flags -e para ambos nos targets docker-run e image-start
   - Adicionado env no yaml do pod gerado
+- Correção no tratamento do src/env
+- Removido '@' dos comandos para serem exibidos em execução
 
 
 _O formato deste documento foi baseado no [Mantenha um
