@@ -19,6 +19,19 @@ Todas as alterações significativas neste projeto.
 - Corrigido teste para variável IMAGE\_NAME e ENVIRONMENT vazias.
 - Adicionada variável K8S\_DEPLOY.
 
+## [1.3.0]
+- Incluído image prune no target clean
+
+## [2.0.0] - 2019-01-21
+- Alterada estrutura do projeto para maior compatibilidade com Maven.
+  - Movido Dockerfile um nível acima
+  - Extinguido parâmetro SRC\_DIR
+- Adicionados parâmetros APPLICATION e ENVIRONMENT como variáveis de ambiente da imagem.
+  - Melhorada lógica para teste do arquivo env e definição de ENV\_FLAGS
+  - Adicionadas flags -e para ambos nos targets docker-run e image-start
+  - Adicionado env no yaml do pod gerado
+
+
 _O formato deste documento foi baseado no [Mantenha um
 Changelog](https://keepachangelog.com/pt-BR/0.3.0/) e este projeto é aderente ao
 [Versionamento Semântico](https://semver.org/lang/pt-BR/)_.

@@ -10,12 +10,13 @@ status](https://gitlab.trt8.jus.br/trt8/kubernetes-project/badges/master/pipelin
 
 ```
 .
-├── src/           # raíz da aplicação em desenvolvimento
-│   ├── Dockerfile # Dockerfile para geração da imagem
-│   └── env        # variáveis de ambiente usadas pela imagem
-├── app.ini        # arquivo de parâmetros da aplicação
-├── makefile       # arquivo makefile com ações comuns
-└── yaml/          # arquivos yaml onde os parâmetros serão interpolados
+├── app.ini       # arquivo principal com parâmetros do projeto
+├── Dockerfile    # arquivo Dockerfile para geração da imagem
+├── assets/       # local padrão de artefatos para cópia
+├── src/          # código-fonte da aplicação
+│   └── env       # variáveis de ambiente usadas pela imagem
+├── makefile      # arquivo makefile
+└── yaml/         # arquivos yaml onde os parâmetros do projeto serão interpolados
 ```
 
 Além de prover uma estrutura básica para uma maior organização da

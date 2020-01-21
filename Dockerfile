@@ -1,6 +1,6 @@
 FROM golang:1.7 AS compiler
 WORKDIR /tmp
-COPY hello.go .
+COPY src/hello.go .
 RUN go build hello.go
 
 FROM scratch
