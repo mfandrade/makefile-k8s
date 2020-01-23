@@ -33,6 +33,9 @@ Todas as alterações significativas neste projeto.
 - Correção no tratamento do src/env
 - Removido '@' dos comandos para serem exibidos em execução
 
+## [2.0.1] - 2019-01-23
+- Corrigido erro no target clean
+
 
 _O formato deste documento foi baseado no [Mantenha um
 Changelog](https://keepachangelog.com/pt-BR/0.3.0/) e este projeto é aderente ao

@@ -1,4 +1,4 @@
-# v2.0.0
+# v2.0.1
 ifeq (,$(wildcard ./app.ini))
 $(error "The file app.ini was not found.  Please create it in the project root folder.")
 else
@@ -123,6 +123,7 @@ else
 endif
 
 clean:
-	docker image rm -f $(DOCKER_IMAGE) 2>/dev/null
-	docker image prune -f 2>/dev/null
+	docker container rm -f $(APPLICATION)-container 2>/dev/null || true
+	docker image rm -f $(DOCKER_IMAGE) 2>/dev/null || true
+	docker system prune -f 2>/dev/null || true
 	rm -rf $(YAML_BUILD_DIR)
