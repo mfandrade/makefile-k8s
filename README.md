@@ -169,6 +169,7 @@ Your branch is up to date with 'origin/master'.
 
 nothing to commit, working tree clean
 
+$ git add -A .
 $ git push origin master
 ```
 
