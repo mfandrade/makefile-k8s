@@ -1,4 +1,4 @@
-# v2.0.1
+# v2.1.0
 ifeq (,$(wildcard ./app.ini))
 $(error "The file app.ini was not found.  Please create it in the project root folder.")
 else
@@ -24,8 +24,10 @@ YAML_DIR       ?= ./yaml
 YAML_BUILD_DIR := ./.build_yaml
 YAML_FILES     := $(shell find $(YAML_DIR) -name '*.yaml' 2>/dev/null | sed 's:$(YAML_DIR)/::g')
 
-ENV_FILE       ?= ./src/env
-DOCKERFILE_DIR := .
+DOCKER_CONTEXT := .
+SRC_DIR        := $(DOCKER_CONTEXT)/src
+ENV_FILE       := $(SRC_DIR)/env
+DOCKERFILE     := $(SRC_DIR)/Dockerfile
 
 ENV_FLAGS := -e APPLICATION=$(APPLICATION) -e ENVIRONMENT=$(ENVIRONMENT)
 ifneq (,$(wildcard $(ENV_FILE)))
@@ -78,7 +80,7 @@ help:
 image:
 ifeq ($(BUILD_IMAGE), true)
 	@echo 'Building image $(DOCKER_IMAGE)'
-	docker build $(DOCKER_BUILD_ARGS) $(DOCKERFILE_DIR)
+	docker build -f $(DOCKERFILE) $(DOCKER_BUILD_ARGS) $(DOCKER_CONTEXT)
 else
 	@echo 'Using image $(DOCKER_IMAGE)'
 endif

@@ -36,6 +36,9 @@ Todas as alterações significativas neste projeto.
 ## [2.0.1] - 2019-01-23
 - Corrigido erro no target clean
 
+## [2.1.0] - 2019-01-24
+- Separa pasta src do Docker context.
+
 
 _O formato deste documento foi baseado no [Mantenha um
 Changelog](https://keepachangelog.com/pt-BR/0.3.0/) e este projeto é aderente ao
