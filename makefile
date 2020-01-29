@@ -1,4 +1,4 @@
-# v2.1.0
+# v2.1.1
 ifeq (,$(wildcard ./app.ini))
 $(error "The file app.ini was not found.  Please create it in the project root folder.")
 else
@@ -121,7 +121,7 @@ ifneq (,$(wildcard $(ENV_FILE)))
 endif
 	kubectl apply -f $(YAML_BUILD_DIR)
 else
-	@echo 'Configured to not deploy to Kubernetes.  Skipping.'
+	$(error '(K8S_DEPLOY=false) Configured to not deploy to Kubernetes.  Skipping.')
 endif
 
 clean:
