@@ -42,6 +42,11 @@ Todas as alterações significativas neste projeto.
 ## [2.1.1] - 2020-01-29
 - Target deploy agora falha se for configurado para false.
 
+
+## [2.2.0] - 2020-01-31
+- Include undeploy target
+
+
 _O formato deste documento foi baseado no [Mantenha um
 Changelog](https://keepachangelog.com/pt-BR/0.3.0/) e este projeto é aderente ao
 [Versionamento Semântico](https://semver.org/lang/pt-BR/)_.

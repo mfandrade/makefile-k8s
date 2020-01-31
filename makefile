@@ -1,4 +1,4 @@
-# v2.1.1
+# v2.2.0
 ifeq (,$(wildcard ./app.ini))
 $(error "The file app.ini was not found.  Please create it in the project root folder.")
 else
@@ -112,7 +112,9 @@ build-yaml: $(YAML_BUILD_DIR)
 	done
 
 deploy: build-yaml
-ifeq ($(K8S_DEPLOY), true)
+ifeq ($(K8S_DEPLOY), false)
+	$(error '(K8S_DEPLOY=false) Configured to not deploy to Kubernetes.  Skipping.')
+else
 	kubectx kubernetes-$(ENVIRONMENT) # TODO: improve name of contexts
 
 ifneq (,$(wildcard $(ENV_FILE)))
@@ -120,9 +122,18 @@ ifneq (,$(wildcard $(ENV_FILE)))
 	| kubectl apply -f -
 endif
 	kubectl apply -f $(YAML_BUILD_DIR)
-else
-	$(error '(K8S_DEPLOY=false) Configured to not deploy to Kubernetes.  Skipping.')
 endif
+
+
+undeploy: build-yaml
+ifeq ($(K8S_DEPLOY), false)
+	$(error '(K8S_DEPLOY=false) Configured to not deploy to Kubernetes.  Skipping.')
+else
+	kubectx kubernetes-$(ENVIRONMENT) # TODO: improve name of contexts
+	kubectl delete configmap $(APPLICATION)-config
+	kubectl delete -f $(YAML_BUILD_DIR)
+endif
+
 
 clean:
 	docker container rm -f $(APPLICATION)-container 2>/dev/null || true
