@@ -5,24 +5,24 @@ Todas as alterações significativas neste projeto.
 ## [Não-liberado]
 - Desenvolvimento anterior à versão 1.0.0
 
-## [1.0.0] - 2019-12-16
+## [v1.0.0] - 2019-12-16
 - Primeira versão funcional. Aprovada para uso em Dezembro/2019.
 
-## [1.1.0] - 2019-12-17
+## [v1.1.0] - 2019-12-17
 - Adicionado parâmetro NAMESPACE como um sinônimo para PACKAGE.
 
-## [1.1.1] - 2019-12-18
+## [v1.1.1] - 2019-12-18
 - Corrigido parâmetro BUILD\_ARGS para permitir uso de mais de um valor.
 
-## [1.2.0] - 2020-01-14
+## [v1.2.0] - 2020-01-14
 - Renomeada pasta default da aplicação de app-src para apenas src.
 - Corrigido teste para variável IMAGE\_NAME e ENVIRONMENT vazias.
 - Adicionada variável K8S\_DEPLOY.
 
-## [1.3.0]
-- Incluído image prune no target clean
+## [v1.3.0] - 2020-01-15
+- Corrige criação do configmap e inclui image prune no clean.
 
-## [2.0.0] - 2020-01-21
+## [v2.0.0] - 2020-01-21
 - Alterada estrutura do projeto para maior compatibilidade com Maven.
   - Movido Dockerfile um nível acima
   - Extinguido parâmetro SRC\_DIR
@@ -44,7 +44,7 @@ Todas as alterações significativas neste projeto.
 
 
 ## [2.2.0] - 2020-01-31
-- Include undeploy target
+- Inclui o undeploy target.
 
 
 _O formato deste documento foi baseado no [Mantenha um
