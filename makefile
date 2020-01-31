@@ -113,7 +113,7 @@ build-yaml: $(YAML_BUILD_DIR)
 
 deploy: build-yaml
 ifeq ($(K8S_DEPLOY), true)
-	kubectx cluster-$(ENVIRONMENT)
+	kubectx kubernetes-$(ENVIRONMENT) # TODO: improve name of contexts
 
 ifneq (,$(wildcard $(ENV_FILE)))
 	kubectl create configmap $(APPLICATION)-config -n $(PACKAGE) --from-env-file=$(ENV_FILE) -o yaml --dry-run \
