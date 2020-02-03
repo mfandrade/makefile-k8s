@@ -1,4 +1,4 @@
-# v2.2.0
+# v2.3.0
 ifeq (,$(wildcard ./app.ini))
 $(error "The file app.ini was not found.  Please create it in the project root folder.")
 else
@@ -69,6 +69,7 @@ help:
 	@echo 'TARGET can be:'
 	@echo '    image       - generates the Docker image using a proper build command.'
 	@echo '    release     - build and pushes the Docker image to specified registry.'
+	@echo '    shell       - runs the standard shell instead of image entrypoint.
 	@echo '    docker-run  - runs the generated Docker image (with RUN_FLAGS, if specified).'
 	@echo '    image-start - starts the specified image in background (with RUN_FLAGS, if specified).'
 	@echo '    image-stop  - stops the specified image previously started.'
@@ -89,6 +90,9 @@ release: image
 ifeq ($(BUILD_IMAGE), true)
 	docker push $(DOCKER_IMAGE)
 endif
+
+shell: image
+	docker run -it --rm --name $(APPLICATION)-container --entrypoint /bin/sh $(ENV_FLAGS) $(DOCKER_IMAGE)
 
 docker-run: image
 	docker run --rm --name $(APPLICATION)-container $(ENV_FLAGS) $(RUN_FLAGS) $(DOCKER_IMAGE)
@@ -124,7 +128,6 @@ endif
 	kubectl apply -f $(YAML_BUILD_DIR)
 endif
 
-
 undeploy: build-yaml
 ifeq ($(K8S_DEPLOY), false)
 	$(error '(K8S_DEPLOY=false) Configured to not deploy to Kubernetes.  Skipping.')
@@ -133,6 +136,8 @@ else
 	kubectl delete configmap $(APPLICATION)-config
 	kubectl delete -f $(YAML_BUILD_DIR)
 endif
+
+redeploy: undeploy deploy
 
 
 clean:

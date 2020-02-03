@@ -33,18 +33,21 @@ Todas as alterações significativas neste projeto.
 - Correção no tratamento do src/env
 - Removido '@' dos comandos para serem exibidos em execução
 
-## [2.0.1] - 2020-01-23
+## [v2.0.1] - 2020-01-23
 - Corrigido erro no target clean
 
-## [2.1.0] - 2020-01-24
+## [v2.1.0] - 2020-01-24
 - Separa pasta src do Docker context.
 
-## [2.1.1] - 2020-01-29
+## [v2.1.1] - 2020-01-29
 - Target deploy agora falha se for configurado para false.
 
-
-## [2.2.0] - 2020-01-31
+## [v2.2.0] - 2020-01-31
 - Inclui o undeploy target.
+
+## [v2.3.0] - 2020-02-05
+- Inclui o shell target.
+- Inclui o redeploy target.
 
 
 _O formato deste documento foi baseado no [Mantenha um
