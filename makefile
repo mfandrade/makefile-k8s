@@ -125,22 +125,25 @@ deploy: build-yaml
 ifeq ($(K8S_DEPLOY), false)
 	$(error '(K8S_DEPLOY=false) Configured to not deploy to Kubernetes.  Skipping.')
 else
-	kubectx kubernetes-$(ENVIRONMENT) # TODO: improve name of contexts
+	@kubectx kubernetes-$(ENVIRONMENT)
 
 ifneq (,$(wildcard $(ENV_FILE)))
-	kubectl create configmap $(APPLICATION)-config -n $(PACKAGE) --from-env-file=$(ENV_FILE) -o yaml --dry-run \
+	@kubectl create configmap $(APPLICATION)-config -o yaml --dry-run \
+		-n $(PACKAGE) \
+		--from-env-file=$(ENV_FILE) \
 	| kubectl apply -f -
 endif
-	kubectl apply -f $(YAML_BUILD_DIR)
+	@kubectl apply -f $(YAML_BUILD_DIR)
 endif
 
 undeploy: build-yaml
 ifeq ($(K8S_DEPLOY), false)
 	$(error '(K8S_DEPLOY=false) Configured to not deploy to Kubernetes.  Skipping.')
 else
-	kubectx kubernetes-$(ENVIRONMENT) # TODO: improve name of contexts
-	kubectl delete configmap $(APPLICATION)-config
-	kubectl delete -f $(YAML_BUILD_DIR)
+	@kubectx kubernetes-$(ENVIRONMENT)
+
+	@kubectl delete configmap $(APPLICATION)-config 2>/dev/null || true
+	@kubectl delete -f $(YAML_BUILD_DIR) 2>/dev/null || true
 endif
 
 redeploy: undeploy deploy
