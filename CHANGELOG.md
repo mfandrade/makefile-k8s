@@ -48,6 +48,7 @@ Todas as alterações significativas neste projeto.
 ## [v2.3.0] - 2020-02-05
 - Inclui o shell target.
 - Inclui o redeploy target.
+- Melhora mensagem de help.
 
 
 _O formato deste documento foi baseado no [Mantenha um
