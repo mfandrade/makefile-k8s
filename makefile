@@ -1,4 +1,4 @@
-# v2.3.0
+# v2.3.1
 ifeq (,$(wildcard ./app.ini))
 $(error "The file app.ini was not found.  Please create it in the project root folder.")
 else
@@ -26,8 +26,8 @@ YAML_FILES     := $(shell find $(YAML_DIR) -name '*.yaml' 2>/dev/null | sed 's:$
 
 DOCKER_CONTEXT := .
 SRC_DIR        := $(DOCKER_CONTEXT)/src
-ENV_FILE       := $(SRC_DIR)/env
-DOCKERFILE     := $(SRC_DIR)/Dockerfile
+ENV_FILE       ?= $(SRC_DIR)/env
+DOCKERFILE     ?= $(SRC_DIR)/Dockerfile
 
 ENV_FLAGS := -e APPLICATION=$(APPLICATION) -e ENVIRONMENT=$(ENVIRONMENT)
 ifneq (,$(wildcard $(ENV_FILE)))

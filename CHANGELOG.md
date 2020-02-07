@@ -50,6 +50,9 @@ Todas as alterações significativas neste projeto.
 - Inclui o redeploy target.
 - Melhora mensagem de help.
 
+## [v2.3.1] - 2020-02-07
+- Corrige bug para permitir especificar o Dockerfile e o env.
+
 
 _O formato deste documento foi baseado no [Mantenha um
 Changelog](https://keepachangelog.com/pt-BR/0.3.0/) e este projeto é aderente ao
