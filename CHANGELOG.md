@@ -53,6 +53,10 @@ Todas as alterações significativas neste projeto.
 ## [v2.3.1] - 2020-02-07
 - Corrige bug para permitir especificar o Dockerfile e o env.
 
+## [v2.3.2] - 2020-02-11
+- Evita espaços em branco nos parâmetros a serem usados.
+- Remove variável PACKAGE obsoleta.
+
 
 _O formato deste documento foi baseado no [Mantenha um
 Changelog](https://keepachangelog.com/pt-BR/0.3.0/) e este projeto é aderente ao

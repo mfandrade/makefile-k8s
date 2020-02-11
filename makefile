@@ -1,4 +1,4 @@
-# v2.3.1
+# v2.3.2
 ifeq (,$(wildcard ./app.ini))
 $(error "The file app.ini was not found.  Please create it in the project root folder.")
 else
@@ -56,7 +56,7 @@ APPID := $(shell bash -c 'printf "%05d" $$RANDOM')-$(APPLICATION)
 AVAILABLE_VARS := APPLICATION NAMESPACE ENVIRONMENT DOCKER_IMAGE APPID
 AVAILABLE_VARS += APP_BACKEND_PORT APP_ENDPOINT_URL APP_ENDPOINT_PATH
 
-SHELL_EXPORT := $(foreach v,$(AVAILABLE_VARS),$(v)='$($(v))' )
+SHELL_EXPORT := $(foreach v,$(AVAILABLE_VARS),$(v)='$(firstword $($(v)))' )
 
 # ---------------------------------------------------------------------------------------------------------------------
 .PHONY: help image release docker-run image-start image-stop build-yaml deploy clean
