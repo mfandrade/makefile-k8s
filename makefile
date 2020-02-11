@@ -10,7 +10,7 @@ $(error "The ENVIRONMENT variable is undefined.  Please, define its value in app
 endif
 APPLICATION ?= $(shell basename $(CURDIR))
 NAMESPACE   ?= $(APPLICATION)
-PACKAGE     := $(NAMESPACE)
+
 ifeq (,$(wildcard ./.git))
 $(error "This project is still not version controlled.  Please initialize a git repo and add a remote to it.")
 endif
@@ -53,7 +53,7 @@ endif
 
 APPID := $(shell bash -c 'printf "%05d" $$RANDOM')-$(APPLICATION)
 
-AVAILABLE_VARS := PACKAGE APPLICATION ENVIRONMENT DOCKER_IMAGE APPID
+AVAILABLE_VARS := APPLICATION NAMESPACE ENVIRONMENT DOCKER_IMAGE APPID
 AVAILABLE_VARS += APP_BACKEND_PORT APP_ENDPOINT_URL APP_ENDPOINT_PATH
 
 SHELL_EXPORT := $(foreach v,$(AVAILABLE_VARS),$(v)='$($(v))' )
@@ -129,7 +129,7 @@ else
 
 ifneq (,$(wildcard $(ENV_FILE)))
 	@kubectl create configmap $(APPLICATION)-config -o yaml --dry-run \
-		-n $(PACKAGE) \
+		-n $(NAMESPACE) \
 		--from-env-file=$(ENV_FILE) \
 	| kubectl apply -f -
 endif
