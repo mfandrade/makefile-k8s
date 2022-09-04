@@ -12,7 +12,7 @@ NAMESPACE   ?= default
 IMAGE_NAME  ?= $(shell git remote -v | sed -ne '1 s:^origin.*github\.com[:/]\(.*\)\.git.*$$:\1:p')
 
 VERSION := $(shell cat VERSION 2>/dev/null || git rev-parse --short HEAD)
-VERSION := $(addsuffix $(shell git diff --quiet || echo '-WIP'), $(VERSION))
+VERSION := $(addsuffix $(shell git status --short >/dev/null && echo '-WIP'), $(VERSION))
 DOCKER_IMAGE := $(REGISTRY)$(IMAGE_NAME):$(VERSION)
 
 
@@ -50,7 +50,7 @@ image: $(DOCKERFILE) ##- Builds image with BUILD_ARGS if specified.
 
 release: image ##- Publishes image to registry (needs previous authentication).
 	$(eval LATEST := $(REGISTRY)$(IMAGE_NAME):latest)
-	git diff --quiet && \
+	@test -z `git status --short >/dev/null` && \
 		docker tag $(DOCKER_IMAGE) $(LATEST) && \
 		docker push $(DOCKER_IMAGE) && \
 		docker push $(LATEST) || \
@@ -110,3 +110,4 @@ help: ##- This message.
 	@echo
 	@echo 'TARGET can be:'
 	@sed -e '/#\{2\}-/!d; s/\\$$//; s/:[^#\t]*/\t- /; s/#\{2\}- *//' $(MAKEFILE_LIST)
+
