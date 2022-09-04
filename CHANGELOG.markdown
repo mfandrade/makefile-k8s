@@ -57,7 +57,7 @@ Todas as alterações significativas neste projeto.
 - Evita espaços em branco nos parâmetros a serem usados.
 - Remove variável PACKAGE obsoleta.
 
-## [v3.0] - 2022-09-03
+## [v4.0] - 2022-09-03
 - Reescreve o projeto para o Github.
 
 
