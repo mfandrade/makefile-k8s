@@ -50,11 +50,11 @@ image: $(DOCKERFILE) ##- Builds image with BUILD_ARGS if specified.
 
 release: image ##- Publishes image to registry (needs previous authentication).
 	$(eval LATEST := $(REGISTRY)$(IMAGE_NAME):latest)
-	@git diff --quiet && \
+	git diff --quiet && \
 		docker tag $(DOCKER_IMAGE) $(LATEST) && \
 		docker push $(DOCKER_IMAGE) && \
 		docker push $(LATEST) || \
-		$(error This git repo is in dirty state.  Aborting release..)
+		echo 'This git repo is in dirty state.  Aborting release...'
 
 ENV_FILE  ?= env
 ENV_FLAGS := -e APPLICATION=$(APPLICATION) -e ENVIRONMENT=$(ENVIRONMENT)
