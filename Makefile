@@ -97,13 +97,13 @@ yaml: $(YAML_BUILD_DIR) app.ini ##- Interpolates vars in yaml files.
 
 
 ### KUBERNETES RELATED ###############################################
-deploy: release yaml ##- Creates a deploy of the released image to context called ENVIRONMENT.
+deploy: undeploy release yaml ##- Creates a deploy of the released image to context called ENVIRONMENT.
 	kubectl config use-context $(ENVIRONMENT)
 	kubectl create -f $(YAML_BUILD_DIR)
 
-undeploy: ##- Deletes the deploy.
+undeploy: yaml ##- Deletes the deploy.
 	kubectl config use-context $(ENVIRONMENT)
-	kubectl delete -f $(YAML_BUILD_DIR)
+	kubectl delete -f $(YAML_BUILD_DIR) 2>/dev/null
 
 ######################################################################
 help: ##- This message.
