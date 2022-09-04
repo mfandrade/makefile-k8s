@@ -7,7 +7,7 @@ REGISTRY    ?=
 BRANCH      := $(shell git branch --show-current)
 ENVIRONMENT := $(BRANCH)
 APPLICATION := $(shell basename $(CURDIR))
-NAMESPACE   ?= default
+NAMESPACE   ?= $(APPLICATION)
 
 IMAGE_NAME  ?= $(shell git remote -v | sed -ne '1 s:^origin.*github\.com[:/]\(.*\)\.git.*$$:\1:p')
 
@@ -97,13 +97,14 @@ yaml: $(YAML_BUILD_DIR) app.ini ##- Interpolates vars in yaml files.
 
 
 ### KUBERNETES RELATED ###############################################
-deploy: undeploy release yaml ##- Creates a deploy of the released image to context called ENVIRONMENT.
+deploy: release yaml ##- Creates a deploy of the released image to context called ENVIRONMENT.
 	kubectl config use-context $(ENVIRONMENT)
 	kubectl create -f $(YAML_BUILD_DIR)
 
 undeploy: yaml ##- Deletes the deploy.
 	kubectl config use-context $(ENVIRONMENT)
-	kubectl delete -f $(YAML_BUILD_DIR) 2>/dev/null
+	# TODO permissao para o usuario criar e deletar mas impedir excluir os necessarios
+	kubectl delete namespace $(NAMESPACE)
 
 ######################################################################
 help: ##- This message.
