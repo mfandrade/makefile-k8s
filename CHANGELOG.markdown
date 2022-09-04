@@ -57,6 +57,9 @@ Todas as alterações significativas neste projeto.
 - Evita espaços em branco nos parâmetros a serem usados.
 - Remove variável PACKAGE obsoleta.
 
+## [v4.0] - 2022-09-03
+- Reescreve o projeto para o Github.
+
 
 _O formato deste documento foi baseado no [Mantenha um
 Changelog](https://keepachangelog.com/pt-BR/0.3.0/) e este projeto é aderente ao

@@ -1,0 +1,10 @@
+# This is a dummy file just to show all
+# the vars available in the yaml files.
+# --------------------------------------
+#       APPLICATION: ${APPLICATION}
+#         NAMESPACE: ${NAMESPACE}
+#       ENVIRONMENT: ${ENVIRONMENT}
+#      DOCKER_IMAGE: ${DOCKER_IMAGE}
+#      BACKEND_PORT: ${BACKEND_PORT}
+#   APPLICATION_URL: ${APPLICATION_URL}
+#  APPLICATION_HOME: ${APPLICATION_HOME}

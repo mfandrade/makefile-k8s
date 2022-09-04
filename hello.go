@@ -1,3 +1,6 @@
+// AUTHOR: Marcelo F Andrade <mfandrade@gmail.com>
+// LICENSE: The Beer-ware License
+// (C) 2022 https://about.me/mfandrade
 package main
 
 import (
@@ -5,7 +8,6 @@ import (
     "os"
     "time"
 )
-
 
 func say_hello(name string) {
 
@@ -15,14 +17,12 @@ func say_hello(name string) {
     fmt.Printf("Hello, %v!\n", name)
 }
 
-
 func main() {
 
-    times := 5
+    times := 10 // 10 seconds
     for i := 0; i < times; i++ {
 
-        say_hello(os.Getenv("GREETINGS_TO"))
+        say_hello(os.Getenv("USERNAME"))
         time.Sleep(time.Second)
     }
 }
-

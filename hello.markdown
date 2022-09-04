@@ -17,11 +17,11 @@ Hello, World!
 Hello, World!
 ```
 
-No entanto, se houver a variável de ambiente `GREETINGS_TO`, a aplicação exibirá a mensagem ao nome que nela estiver
+No entanto, se houver a variável de ambiente `USERNAME`, a aplicação exibirá a mensagem ao nome que nela estiver
 definido ao invés de "World":
 
 ```shell
-$ GREETINGS_TO=Fulano go run hello.go
+$ USERNAME=Fulano go run hello.go
 Hello, Fulano!
 Hello, Fulano!
 Hello, Fulano!

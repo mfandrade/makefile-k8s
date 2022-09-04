@@ -1,6 +1,11 @@
-app.ini
-makefile
-yaml/
-CHANGELOG.md
-README.md
-UNLICENSE
+# Ignore everything
+*
+
+# Ignore unnecessary files
+**/*~
+**/*.log
+**/.*.swp
+
+# Allow app files
+!app.py
+!templates/
