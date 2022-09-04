@@ -7,5 +7,5 @@
 **/.*.swp
 
 # Allow app files
-!app.py
+!*.py
 !templates/
