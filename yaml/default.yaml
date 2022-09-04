@@ -41,7 +41,8 @@ spec:
   selector:
     app: ${APPLICATION}
   ports:
-  - port: ${BACKEND_PORT}
+  - name: http
+    port: ${BACKEND_PORT}
 
 #---
 #kind: Ingress
