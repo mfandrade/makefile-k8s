@@ -1,0 +1,58 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: ${APPLICATION}
+  labels:
+    app: ${APPLICATION}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ${APPLICATION}
+  template:
+    metadata:
+      labels:
+        app: ${APPLICATION}
+    spec:
+      containers:
+      - name: ${APPLICATION}-container
+        image: ${DOCKER_IMAGE}
+        ports:
+        - name: http
+          containerPort: ${BACKEND_PORT}
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: ${APPLICATION}-svc
+  labels:
+    app: ${APPLICATION}
+spec:
+  selector:
+    app: ${APPLICATION}
+  ports:
+  - port: ${BACKEND_PORT}
+
+---
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: ${APPLICATION}-ing
+  labels:
+    app: ${APPLICATION}
+  annotations:
+    nginx.ingress.kubernetes.io/app-root: ${APPLICATION_HOME}
+spec:
+  tls:
+  - hosts:
+    - ${APPLICATION_URL}
+  rules:
+  - host: ${APPLICATION_URL}
+    http:
+      paths:
+      - path: ${APPLICATION_HOME}
+        backend:
+          serviceName: ${APPLICATION}-svc
+          servicePort: ${BACKEND_PORT}
+
