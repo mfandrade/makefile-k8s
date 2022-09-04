@@ -100,6 +100,7 @@ yaml: $(YAML_BUILD_DIR) app.ini ##- Interpolates vars in yaml files.
 deploy: release yaml ##- Creates a deploy of the released image to context called ENVIRONMENT.
 	kubectl config use-context $(ENVIRONMENT)
 	kubectl apply -f $(YAML_BUILD_DIR)
+	test -f $(ENV_FILE) && kubectl create configmap $(APPLICATION)-config --namespace=$(NAMESPACE) --from-file=$(ENV_FILE)
 
 undeploy: yaml ##- Deletes the deploy.
 	kubectl config use-context $(ENVIRONMENT)
