@@ -50,7 +50,7 @@ image: $(DOCKERFILE) ##- Builds image with BUILD_ARGS if specified.
 
 release: image ##- Publishes image to registry (needs previous authentication).
 	$(eval LATEST := $(REGISTRY)$(IMAGE_NAME):latest)
-	@test -z `git status --short >/dev/null` && \
+	@$$(test -z "$$(git status --short)") && \
 		docker tag $(DOCKER_IMAGE) $(LATEST) && \
 		docker push $(DOCKER_IMAGE) && \
 		docker push $(LATEST) || \
