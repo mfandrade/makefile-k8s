@@ -12,7 +12,7 @@ NAMESPACE   ?= default
 IMAGE_NAME  ?= $(shell git remote -v | sed -ne '1 s:^origin.*github\.com[:/]\(.*\)\.git.*$$:\1:p')
 
 VERSION := $(shell cat VERSION 2>/dev/null || git rev-parse --short HEAD)
-VERSION := $(addsuffix $(shell git status --short >/dev/null && echo '-WIP'), $(VERSION))
+VERSION := $(addsuffix $(shell test -n "`git status --short`" && echo '-WIP'), $(VERSION))
 DOCKER_IMAGE := $(REGISTRY)$(IMAGE_NAME):$(VERSION)
 
 
