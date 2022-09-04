@@ -11,15 +11,18 @@ metadata:
   name: ${APPLICATION}
   labels:
     app: ${APPLICATION}
+    run: ${ENVIRONMENT}
 spec:
   replicas: 2
   selector:
     matchLabels:
       app: ${APPLICATION}
+      run: ${ENVIRONMENT}
   template:
     metadata:
       labels:
         app: ${APPLICATION}
+        run: ${ENVIRONMENT}
     spec:
       containers:
       - name: ${APPLICATION}-container
@@ -36,10 +39,12 @@ metadata:
   name: ${APPLICATION}-svc
   labels:
     app: ${APPLICATION}
+    run: ${ENVIRONMENT}
 spec:
   type: NodePort
   selector:
     app: ${APPLICATION}
+    run: ${ENVIRONMENT}
   ports:
   - name: http
     port: ${BACKEND_PORT}
@@ -52,6 +57,7 @@ spec:
 #  name: ${APPLICATION}-ing
 #  labels:
 #    app: ${APPLICATION}
+#    run: ${ENVIRONMENT}
 #  annotations:
 #    nginx.ingress.kubernetes.io/app-root: ${APPLICATION_HOME}
 #spec:
