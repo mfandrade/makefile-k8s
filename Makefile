@@ -63,10 +63,11 @@ ifneq (,$(wildcard $(ENV_FILE)))
 endif
 
 run: image ##- Runs this image as a container with RUN_FLAGS if specified.
-	docker container run --rm --name $(APPLICATION)-container $(ENV_FLAGS) $(RUN_FLAGS) $(DOCKER_IMAGE)
+	docker container run --detach --rm --name $(APPLICATION)-container $(ENV_FLAGS) $(RUN_FLAGS) $(DOCKER_IMAGE)
 
-shell: image ##- Gets to the container shell, if available.
-	docker container run --rm --name $(APPLICATION)-container --interactive --tty $(ENV_FLAGS) $(RUN_FLAGS) $(DOCKER_IMAGE) /bin/sh
+shell: run ##- Gets to the container shell, if available.
+	docker container exec --interactive --tty $(APPLICATION)-container /bin/sh
+	@docker container rm --force $(APPLICATION)-container
 
 clean: ##- Removes generated image and containers.
 	@docker container rm -f $(APPLICATION)-container 2>/dev/null || true
