@@ -31,7 +31,7 @@ app.ini: ##- Sets required parameters if they're not present.
 	$(shell echo >> app.ini)
 	$(shell echo 'RUN_FLAGS        = -p 8080:8080' >> app.ini)
 	$(shell echo '#ENV_FILE        = env.$$(BRANCH)' >> app.ini)
-	$(error The app.ini file was created.  Please run this Makefile again)
+	$(error The app.ini file was created.  Please run this Makefile again..)
 include app.ini
 
 
@@ -49,11 +49,12 @@ image: $(DOCKERFILE) ##- Builds image with BUILD_ARGS if specified.
 	@docker image prune -f >/dev/null
 
 release: image ##- Publishes image to registry (needs previous authentication).
-	# TODO não fazer release de repo dirty
 	$(eval LATEST := $(REGISTRY)$(IMAGE_NAME):latest)
-	docker tag $(DOCKER_IMAGE) $(LATEST)
-	docker push $(DOCKER_IMAGE)
-	docker push $(LATEST)
+	@git diff --quiet && \
+		docker tag $(DOCKER_IMAGE) $(LATEST) && \
+		docker push $(DOCKER_IMAGE) && \
+		docker push $(LATEST) || \
+		$(error This git repo is in dirty state.  Aborting release..)
 
 ENV_FILE  ?= env
 ENV_FLAGS := -e APPLICATION=$(APPLICATION) -e ENVIRONMENT=$(ENVIRONMENT)
