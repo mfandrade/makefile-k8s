@@ -3,4 +3,4 @@ RUN   pip install flask
 COPY  . /opt/
 WORKDIR /opt
 EXPOSE  8080
-CMD ["python", "app.py"]
+CMD ["python", "server.py"]
